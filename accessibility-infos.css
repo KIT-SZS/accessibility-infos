@@ -1,0 +1,75 @@
+table, th, td {
+   border: 1px solid black;
+}
+
+#controls{
+  position:absolute;
+  width:20%;height:100%;
+  left:0px;
+  border:1px solid black;
+  padding:5px;
+}
+
+#data{
+  position:absolute;
+  width:80%;height:100%;
+  left:20%;
+  border:1px solid black;
+padding:5px;
+  margin-left: 10px;
+}
+
+
+/*for map ---------------*/
+
+accessibility-map {
+
+width: 640px;
+height: 480px;
+position: absolute;
+z-index: 10;
+}
+
+core-collapse {
+margin: 10px 0;
+background: rgb(248, 248, 248);
+        padding: 15px;
+        display: block !important;
+        min-height: 15px;
+}
+
+h5{
+  width: 100%;
+  font-size: 15px;
+  margin-top: 0px;
+}
+
+#textData{
+  width: 60%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding:10px;
+}
+
+#mapData{
+  width: 40%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 60%;
+}
+
+.itemName{
+  color:blue;
+  display: inline-block;
+  font-weight: bold;
+  width: 100px;
+}
+
+.itemText{
+  color: black;
+  display: inline-block;
+  text-align: center;
+  width: 400px;
+}

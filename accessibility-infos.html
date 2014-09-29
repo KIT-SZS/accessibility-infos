@@ -1,0 +1,509 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="components/paper-item/paper-item.html">
+
+<link rel="import" href="components/core-selector/core-selector.html">
+<link rel="import" href="components/core-collapse/core-collapse.html">
+
+<link rel="import" href="accessibility-map.html">
+
+<script src="Set.js"></script>
+
+<polymer-element name="accessibility-infos">
+<template>
+  <link href="./accessibility-infos.css" rel="stylesheet" ></link>
+  <article id="controls"> 
+    <section>
+      <h4>Sehen</h4>
+      <paper-radio-group selected="{{selectedVisualDisability}}">
+        <template repeat="{{disability in visualDisabilities}}">
+          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </section>
+
+    <section>
+      <h4>Hören</h4>
+      <paper-radio-group selected="{{selectedHearingDisability}}">
+        <template repeat="{{disability in hearingDisabilities}}">
+          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </section>
+
+    <section>
+      <h4>Gehen</h4>
+      <paper-radio-group selected="{{selectedMovementDisability}}">
+        <template repeat="{{disability in movementDisabilities}}">
+          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+        </template>
+      </paper-radio-group>
+    </section>
+
+
+    <section>
+      <h4>Gebäude</h4>
+      <paper-dropdown selected="{{selectedBuildingIndex}}" id="buildingSelector">
+          <template repeat="{{building in buildings}}">
+            <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
+          </template>
+      </paper-dropdown>
+    </section>
+
+    <template if="{{selectedBuilding}}">
+      <section>
+        <h4>Räume</h4>
+          <paper-dropdown selected="{{selectedRoomIndex}}" id="roomSelector">
+              <template repeat="{{room in selectedBuilding.rooms}}">
+                <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
+              </template>
+          </paper-dropdown>
+      </section>
+    </template>
+
+    <section>
+      <h4>Kontakte</h4>
+      Notruf: 
+    </section>
+  </article>
+
+
+  <article id="data">
+      <section id="textData">
+        <template if="{{selectedBuilding}}">
+          <section id="buildingInfos">
+            <h4>Gebaude Informationen</h4>   
+              <core-selector selected="{{selectedBuildingInfo}}">
+                 <template repeat="{{item,i in selectedBuilding | getKeys}}" >
+                   <template if="{{selectedBuilding[item] | isNotObject}}">
+                      <div>
+                        <div class="itemName">{{item}}</div>
+                        <div class="itemText">{{selectedBuilding[item] | toGermanBoolean}}</div>
+                      </div>
+                   </template>
+                   <template if="{{selectedBuilding[item] | isObject}}">
+                        <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
+                          <h5 style="width:100%"> {{item}} </h5>
+                            <section>
+                              <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
+                                <div>
+                                  <div class="itemName"> {{subitem}} </div>
+                                  <div class="itemText"> {{selectedBuilding[item][subitem] | toGermanBoolean }} </div>
+                                </div>
+                              </template>
+                          </section>
+                        </core-collapse>
+                   </template>
+                </template>
+              </core-selector>
+          </section>
+        </template>
+
+        <template if="{{filteredSelectedRoom}}">
+            <section id="roomInfos">
+              <h4>Raum Informationen</h4>   
+
+                 <core-selector selected="{{selectedRoomInfo}}">
+                   <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
+                     <template if="{{filteredSelectedRoom[item] | isNotObject}}">
+                        <div>
+                          <div class="itemName">{{item}}</div>
+                          <div class="itemText">{{filteredSelectedRoom[item] }}</div>
+                        </div>
+                     </template>
+                     <template if="{{filteredSelectedRoom[item] | isObject}}">
+                          <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
+                            <h5 style="width:100%"> {{item}} </h5>
+                              <section>
+                                <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
+                                  <div>
+                                    <div class="itemName"> {{subitem}} </div>
+                                    <div class="itemText"> {{filteredSelectedRoom[item][subitem]}} </div>
+                                  </div>
+                                </template>
+                            </section>
+                          </core-collapse>
+                     </template>
+                  </template>
+                </core-selector>
+            </section>
+        </template>
+      </section>
+      <section id="mapData">
+        <template if="{{displayMode=='map'}}">
+          <accessibility-map> </accessibility-map>
+        </template>
+      </section>
+
+  </article>  
+
+</template>
+<script>
+  Polymer("accessibility-infos", {
+
+    visualDisabilities:null,
+    hearingDisabilities:null,
+    movementDisabilities:null,
+    rooms:null,
+    buildings:null,
+
+
+    selectedVisualDisability:'NA',
+    selectedHearingDisability:'NA',
+    selectedMovementDisability:'NA',
+    selectedBuildingIndex:-1,
+    selectedBuilding     :null,
+    selectedRoomIndex    :-1,
+    selectedRoom         :null,
+
+    selectedRoomInfo     :1, 
+    selectedBuildingInfo :1,
+
+    displayMode:'NA',//can be NA, map, text
+
+    filteredSelectedBuilding:null,
+    filteredSelectedRoom:null,
+
+    created:function(){
+      this.visualDisabilities= ["sehbehindert","blind","NA"];
+      this.hearingDisabilities = ["schwerhörig","gehörlos","NA"];
+      this.movementDisabilities=["gehbehindert","rollstullfahrer","NA"];
+
+      /*i18n.init(
+      {preload: ['en', 'fr']},
+      this.t.bind(this)
+      );*/
+
+      //FILTERING: should be in english ??
+      this.disabilityFieldMap = {
+         "sehbehindert":{
+            building:{},
+            room:{
+              include:["furniture.typeOfDesks","furniture.reflectingBoard"]
+            }
+         },
+         "blind":{
+            building:{},
+            room:{
+              include:["name"]//["furniture.typeOfDesks"]
+            }
+         },
+         "schwerhörig":{
+            building:{},
+            room:{
+              include:["specifics.audioOutput"]
+            }
+         },
+         "gehörlos":{
+            building:{},
+            room:{
+              include:["specifics.audioOutput"],
+            }
+         },
+         "gehbehindert":{
+            building:{},
+            room:{
+              exclude:["furniture.reflectingBoard","furniture.permaChairs","furniture.typeOfDesks","specifics.audioOutput"]//for testing
+            }
+         },
+         "rollstullfahrer":{
+            building:{},
+            room:{
+              exclude:["furniture.reflectingBoard"]
+            }
+         }
+      };
+
+
+      this.buildings= [
+        null,
+
+        {nb:"50.41",name:"AVG (A)",adress:"Adenauerring 20 A",
+          mainEntrance:{hasStairs:false,stairsAmount:0,ramp:false,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,roundDoor:false,doorHardToOpen:false,dangerZones:[]},
+          secondaryEntrance:{hasStairs:true,stairsAmount:3,ramp:true,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,roundDoor:false,doorHardToOpen:false,dangerZones:[]},
+          dangerZones:[{present:false,position:null, description:null}],
+
+          
+          rooms:[
+          { 
+            nb:"-133;-134",name:"Seminarraum",floorName:"UG",description:"",access:"Aufzug",
+            furniture:{
+              permaChairs:false,
+              typeOfDesks:"Seitenfläche am Stuhl",
+              wheelChairDesk:true,
+              wheelChairPlace:"",
+              normalTablesAndChairs:false, 
+              extraTablesPossible:true,
+              reflectingBoard:false
+            },
+            powerPlugs:{
+              extraLengthNeeded:true,
+              list:[]
+            },
+            audioOutput:{type:null,	position:null},
+            specifics:{
+              barriers:[],
+              more:null,
+            },
+            notes:[]
+          },
+          {
+            nb:"-108;-109",name:"Seminarraum",floorName:"UG",description:"",access:"Aufzug",
+          }
+
+          ], 
+        },
+     ];
+    },
+    attached:function(){
+      this.updateBasedOnDisability();
+    },
+    //attribute change handlers
+    selectedVisualDisabilityChanged:function(){
+      this.updateBasedOnDisability();
+    },
+    selectedHearingDisabilityChanged:function(){
+      this.updateBasedOnDisability();
+    },
+    selectedMovementDisabilityChanged:function(){
+      this.updateBasedOnDisability();
+    },
+    selectedBuildingIndexChanged:function(){
+      this.selectedBuilding = this.buildings[this.selectedBuildingIndex-1];
+      this.selectedRoom = null;
+    },
+    selectedBuildingChanged:function(){
+      console.log("selected building changed", this.selectedBuilding);
+    },
+    selectedRoomIndexChanged:function(){
+      this.selectedRoom = this.buildings[this.selectedBuildingIndex-1].rooms[this.selectedRoomIndex-1];
+    },
+    selectedRoomChanged:function(){
+      console.log("selected room changed", this.selectedRoom);
+      this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
+      console.log( this.filteredSelectedRoom );
+    },
+    
+    //helpers
+    updateBasedOnDisability:function(){
+      if(this.selectedVisualDisability == "sehbehindert" || this.selectedVisualDisability == "NA")
+      {
+        this.displayMode = 'map';
+      }else if(this.selectedVisualDisability =="blind"){
+        this.displayMode = 'text';
+      }
+      
+      //should this be here
+      this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
+    },
+    filterByDisability:function( data ){
+      var fieldMapVisual = this.disabilityFieldMap[this.selectedVisualDisability];
+      var fieldMapHearing = this.disabilityFieldMap[this.selectedHearingDisability];
+      var fieldMapMovement = this.disabilityFieldMap[this.selectedMovementDisability];
+
+      if(fieldMapVisual === undefined && fieldMapHearing === undefined && fieldMapMovement === undefined) return data;
+
+      var excludes = {};
+      var includes = {};
+
+      var fieldMaps = [ fieldMapVisual, fieldMapHearing, fieldMapMovement ];
+      var type = "room";
+
+  
+      function extractFields( destination, rawData ){
+        var mainKey = rawData[0];
+        if(!destination.hasOwnProperty(mainKey)) destination[mainKey] = {};
+        if(rawData.length==1)
+        {
+          destination[mainKey]= "leaf";
+          return;
+        }
+
+        rawData = rawData.slice(1);
+       
+        var foo = destination[mainKey];
+        for(var z= 0;z<rawData.length;z++)
+        { 
+          if( z == rawData.length-1)
+          {
+            foo[rawData[z]] = "leaf";
+          }else
+          {
+            foo[rawData[z]] = {};
+            foo = foo[rawData[z]];
+          }
+        }
+      }
+
+      
+      for(var u =0;u<fieldMaps.length;u++)
+      {
+        var fieldMap = fieldMaps[u];
+        if(!(fieldMap)) continue
+        fieldMap = fieldMap[type];
+        //deal with excludes
+        if( "exclude" in fieldMap )
+        {
+          for(var i =0;i<fieldMap.exclude.length;i++)
+          {
+            var tmpExcludes = fieldMap.exclude[i].split(".");
+            extractFields( excludes, tmpExcludes );
+          }
+        }
+        if( "include" in fieldMap )
+        {
+          for(var i =0;i<fieldMap.include.length;i++)
+          {
+            var tmpIncludes = fieldMap.include[i].split(".");
+            extractFields( includes, tmpIncludes );
+          }
+        }
+      }
+
+     //console.log("excludes", excludes);
+     console.log("includes", includes);
+
+
+      //if(excludes.length ==0) return data;
+
+      var result = {};
+      var self = this;
+
+
+      function isLeaf( item ){
+        var isLeaf = false;
+        //console.log("is item leaf", item);
+        if(self.isObject(item))
+        {
+          var foo = Object.keys(item);
+          isLeaf = (foo.length ==1 && item[foo[0]] == "leaf");
+          console.log("isLeaf", item);
+          return isLeaf
+        }
+        return true;
+      }
+
+      function regenData( input, output, includes, excludes )
+      {
+         
+         //console.log("input", input, "output", output, "includes", includes,"excludes", excludes);
+
+         if(!(output) || !(input)) return;
+
+         var keysToKeep = [];
+         if(includes){ 
+            if( isLeaf( includes ) ){
+              if(self.isObject(includes))
+              {
+                keysToKeep = Object.keys(includes);}
+            }else{
+            keysToKeep = Object.keys(input); }
+
+            //console.log("includes", includes);
+         }
+         else{
+            keysToKeep = Object.keys(input);
+         }
+        
+         console.log("keysToKeep", keysToKeep);
+
+         for(var key in input)
+         {
+            var item = input[key];
+            
+            if(self.isObject(item)){
+              //console.log("going down into ", key, item);
+              var subIncludes = undefined;
+              var subExcludes = undefined;
+              
+              if( includes && key in includes) subIncludes = includes[key];
+              if( excludes && key in excludes) subExcludes = excludes[key];
+
+              output[key]= {};
+
+              regenData( item, output[key], subIncludes, subExcludes);
+              //console.log("going up", key, item);
+            }
+            else
+            {
+              var isPresent = keysToKeep.indexOf( key )
+              if( isPresent !== -1 )
+              {
+                //console.log("adding simple item", key, item);
+                output[key]= item;
+              }
+            }
+         }
+         return;
+      }
+
+      regenData( this.selectedRoom, result, includes, excludes);
+      console.log("result", result);
+      return result;
+
+      for(var key in this.selectedRoom)
+      {
+        var item = this.selectedRoom[key];
+        
+        console.log("excludes level 0", Object.keys(excludes));
+
+        if(this.isObject(item))
+        {
+          result[key]= {};
+          for(var subKey in item)
+          {
+            var subItem = this.selectedRoom[key][subKey];
+
+            if( Object.keys(excludes).indexOf( key) !== -1 && excludes[key].indexOf( subKey ) !== -1)
+            {
+              console.log("ignoring", subKey, subItem);
+            }
+            else{ 
+                result[key][subKey] = subItem;
+            }
+          }
+        }
+        else{
+           if( Object.keys(excludes).indexOf( key) == -1  || excludes[key].length == 0)
+            {
+              result[key] = item;
+            }
+          else{
+            console.log("ignoring", key, item, excludes[key]);
+          }
+        }
+
+      }
+
+      console.log("result", result);
+
+      return result;
+
+    },
+    toGermanBoolean:function(source){
+      if(source == undefined || source == null) return "";
+      if(!this.isBoolean(source)) return source;
+      if(source) return "ja";
+      return "nein";
+    },
+    toBold:function(source){
+      return source.toUpperCase();
+    },
+    getKeys : function(o){
+      return Object.keys(o);
+    },
+    isObject : function(v){
+      return (typeof(v) === "object" && !(Array.isArray(v)) && (v !== null ) && (v !== undefined) );
+    },
+    isNotObject : function(v){
+      return typeof(v) !== "object";
+    },
+    isBoolean: function(o){
+      return typeof(o) === "boolean";
+    }
+
+  });
+</script>
+
+</polymer-element>
