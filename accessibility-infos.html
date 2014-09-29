@@ -180,37 +180,151 @@
          "sehbehindert":{
             building:{},
             room:{
-              include:["furniture.typeOfDesks","furniture.reflectingBoard"]
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:true,
+                typeOfDesks:true,
+                wheelChairDesk:false,
+                wheelChairPlace:false,
+                normalTablesAndChairs:true, 
+                extraTablesPossible:true,
+                reflectingBoard:true
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:false,	position:false},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          },
          "blind":{
             building:{},
             room:{
-              include:["name"]//["furniture.typeOfDesks"]
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:true,
+                typeOfDesks:true,
+                wheelChairDesk:false,
+                wheelChairPlace:false,
+                normalTablesAndChairs:true, 
+                extraTablesPossible:false,
+                reflectingBoard:false
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:false,	position:false},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          },
          "schwerhörig":{
             building:{},
             room:{
-              include:["specifics.audioOutput"]
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:false,
+                typeOfDesks:false,
+                wheelChairDesk:false,
+                wheelChairPlace:false,
+                normalTablesAndChairs:false, 
+                extraTablesPossible:false,
+                reflectingBoard:false
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:true,	position:true},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          },
          "gehörlos":{
             building:{},
             room:{
-              include:["specifics.audioOutput"],
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:false,
+                typeOfDesks:false,
+                wheelChairDesk:false,
+                wheelChairPlace:false,
+                normalTablesAndChairs:false, 
+                extraTablesPossible:false,
+                reflectingBoard:false
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:true,	position:true},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          },
          "gehbehindert":{
             building:{},
             room:{
-              exclude:["furniture.reflectingBoard","furniture.permaChairs","furniture.typeOfDesks","specifics.audioOutput"]//for testing
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:true,
+                typeOfDesks:true,
+                wheelChairDesk:true,
+                wheelChairPlace:true,
+                normalTablesAndChairs:true, 
+                extraTablesPossible:true,
+                reflectingBoard:false
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:false,	position:false},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          },
          "rollstullfahrer":{
             building:{},
             room:{
-              exclude:["furniture.reflectingBoard"]
+              nb:true,name:true,floorName:true,description:true,access:true,
+              furniture:{
+                permaChairs:true,
+                typeOfDesks:true,
+                wheelChairDesk:true,
+                wheelChairPlace:true,
+                normalTablesAndChairs:true, 
+                extraTablesPossible:true,
+                reflectingBoard:false
+              },
+              powerPlugs:{
+                extraLengthNeeded:true,
+                list:true
+              },
+              audioOutput:{type:false,	position:false},
+              specifics:{
+                barriers:true,
+                more:true,
+              },
+              notes:true
             }
          }
       };
@@ -220,8 +334,8 @@
         null,
 
         {nb:"50.41",name:"AVG (A)",adress:"Adenauerring 20 A",
-          mainEntrance:{hasStairs:false,stairsAmount:0,ramp:false,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,roundDoor:false,doorHardToOpen:false,dangerZones:[]},
-          secondaryEntrance:{hasStairs:true,stairsAmount:3,ramp:true,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,roundDoor:false,doorHardToOpen:false,dangerZones:[]},
+          mainEntrance:{hasStairs:false,stairsAmount:0,ramp:false,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,revolvingDoor:false,doorHardToOpen:false,dangerZones:[]},
+          secondaryEntrance:{hasStairs:true,stairsAmount:3,ramp:true,rampPosition:null,doorPosition:null,doorDescription:"",doorOpener:false,revolvingDoor:false,doorHardToOpen:false,dangerZones:[]},
           dangerZones:[{present:false,position:null, description:null}],
 
           
@@ -247,11 +361,7 @@
               more:null,
             },
             notes:[]
-          },
-          {
-            nb:"-108;-109",name:"Seminarraum",floorName:"UG",description:"",access:"Aufzug",
           }
-
           ], 
         },
      ];
@@ -310,7 +420,70 @@
       var fieldMaps = [ fieldMapVisual, fieldMapHearing, fieldMapMovement ];
       var type = "room";
 
+      var result = {};
   
+      console.log(fieldMaps);
+
+      function deepValue(obj, path){
+          for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
+              obj = obj[path[i]];
+          };
+          return obj;
+      };
+
+
+      function fooYa(fieldName)
+      {
+        var displayField = false;
+        for(var i=0;i<fieldMaps.length;i++)
+        {
+          var fieldMap = fieldMaps[i];
+          if(!fieldMap) continue;
+          fieldMap = fieldMap[type];
+          var bang = deepValue(fieldMap, fieldName);
+          displayField = displayField | bang;
+        }
+        console.log("display field",fieldName ,Boolean(displayField));
+        return displayField;
+      }
+      //fooYa("room.audioOutput.position")
+      //fooYa("room.furniture.extraTablesPossible")
+
+      function iterate(obj, propPath, result) {
+        for (var property in obj) {
+          if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] == "object" && obj[property] !==null && obj[property] !== undefined) {
+                result[property] = {};
+                console.log("  property",property);
+                iterate(obj[property], propPath + '.' + property, result[property]);
+            } 
+            else
+            {
+              var propPathSub = "";
+              if(propPath!=="") { propPathSub = propPath+"."+property}
+              else{ propPathSub = property;} 
+              if(propPathSub[0] == ".") propPathSub = propPathSub.substring(1);
+              
+              console.log("propPath",propPathSub);
+              if(fooYa(propPathSub))
+              {
+                result[property] = obj[property];
+              }
+            }
+          }
+        }
+      }
+
+      var propPath = "";
+      iterate(this.selectedRoom, propPath, result);
+
+      console.log("result",result);
+      
+      return result;
+
+
+
+
       function extractFields( destination, rawData ){
         var mainKey = rawData[0];
         if(!destination.hasOwnProperty(mainKey)) destination[mainKey] = {};
