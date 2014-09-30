@@ -1,0 +1,47 @@
+{
+  "generalData.nb":"nb",
+  "generalData.name":"name",
+  "generalData.adress":"adress",
+  "caretakerContact.phoneNb":"emergencyNb",
+
+  "MainEntrance.stairLess":"mainEntrance.stairs.absent",
+  "MainEntrance.nbStairs":"mainEntrance.stairs.amount",
+  "MainEntrance.ramp":"mainEntrance.ramp",
+  "MainEntrance.entrance":"mainEntrance.entrance",
+  "MainEntrance.doorOpener":"mainEntrance.doorOpener",
+  "MainEntrance.revolvingDoor":"mainEntrance.revolvingDoor",
+  "MainEntrance.hardToOpen":"mainEntrance.hardToOpen",
+  "MainEntrance.dangerZones":"mainEntrance.dangerPoints",
+
+  "secEntrance.stairLess":"secEntrance.stairs.absent",
+  "secEntrance.nbStairs":"secEntrance.stairs.amount",
+  "secEntrance.ramp":"secEntrance.ramp",
+  "secEntrance.entrance":"secEntrance.entrance",
+  "secEntrance.doorOpener":"secEntrance.doorOpener",
+  "secEntrance.revolvingDoor":"secEntrance.revolvingDoor",
+  "secEntrance.hardToOpen":"secEntrance.hardToOpen",
+  "secEntrance.dangerZones":"secEntrance.dangerPoints",
+
+  "dangerZonesUnderStairs.present":"dangers.present",
+  "dangerZonesUnderStairs.description":"dangers.description",
+
+  "lift.description": "lift.description",
+  "lift.accessibleFloors": "lift.floors.access",
+  "lift.floorAnnouncement":"lift.floors.audio",
+  "lift.floorDisplay":"lift.floors.display",
+  "lift.wheelChairAccessibleControls":"lift.controls.wheelChairAccess",
+  "lift.braille":"lift.controls.brailleText",
+  "lift.ProfileWriting":"lift.controls.profileText",
+  "lift.allowAccessFor": "lift.access",
+  "lift.doorWidth": "lift.dimentions.doorWidth",
+  "lift.innerDimentions": "lift.dimentions.inner",
+
+  "specifics.informationBoard":"infoBooth",
+
+  "toiletForDisabled.description":"toiletForDisabled.description",
+  "toiletForDisabled.euroDoorSystem":"toiletForDisabled.euroDoor",
+  "toiletForDisabled.emergencyNb":"toiletForDisabled.emergencyNb",
+  "toiletForDisabled.remarks":"toiletForDisabled.remarks",
+
+  "various.moreNotes": "various.notes"
+}

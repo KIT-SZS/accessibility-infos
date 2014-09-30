@@ -1,0 +1,138 @@
+{
+    "nb": {
+        "type": "string"
+    },
+    "name": {
+        "type": "string"
+    },
+    "adress": {
+        "type": "string"
+    },
+    "emergencyNb": {
+        "type": "string"
+    },
+    "mainEntrance": {
+        "stairs": {
+            "absent": {
+                "type": "boolean"
+            },
+            "amount": {
+                "type": "integer"
+            }
+        },
+        "ramp": {
+            "type": "string"
+        },
+        "entrance": {
+            "type": "string"
+        },
+        "doorOpener": {
+            "type": "boolean"
+        },
+        "revolvingDoor": {
+            "type": "boolean"
+        },
+        "hardToOpen": {
+            "type": "boolean"
+        },
+        "dangerPoints": {
+            "type": "string"
+        }
+    },
+    "secEntrance": {
+        "stairs": {
+            "absent": {
+                "type": "boolean"
+            },
+            "amount": {
+                "type": "integer"
+            }
+        },
+        "ramp": {
+            "type": "string"
+        },
+        "entrance": {
+            "type": "string"
+        },
+        "doorOpener": {
+            "type": "boolean"
+        },
+        "revolvingDoor": {
+            "type": "boolean"
+        },
+        "hardToOpen": {
+            "type": "boolean"
+        },
+        "dangerPoints": {
+            "type": "string"
+        }
+    },
+    "lift": {
+        "description":  {
+            "type": "string"
+        },
+        "floors":  {
+            "access":  {
+                "type": "string"
+            },
+            "display":  {
+                "type": "boolean"
+            },
+            "audio":  {
+                "type": "boolean"
+            }
+        },
+        "controls":  {
+            "wheelChairAccess": {
+                "type": "boolean"
+            },
+            "brailleText":  {
+                "type": "boolean"
+            },
+            "profileText":  {
+                "type": "boolean"
+            }
+        },
+        "access":  {
+            "type": "string"
+        },
+        "dimentions":  {
+            "doorWidth":  {
+                "type": "integer"
+            },
+            "inner":  {
+                "type": "string"
+            }
+        }
+    },
+    "toiletForDisabled":  {
+        "description":  {
+            "type": "string"
+        },
+        "euroDoor":  {
+            "type": "boolean"
+        },
+        "emergencyNb":  {
+            "type": "string"
+        },
+        "remarks":  {
+            "type": "string"
+        }
+    },
+    "dangers":  {
+        "present":  {
+            "type": "boolean"
+        },
+        "description":  {
+            "type": "string"
+        }
+    },
+    "infoBooth":  {
+        "type": "boolean"
+    },
+    "various":  {
+        "notes":  {
+            "type": "string"
+        }
+    }
+}

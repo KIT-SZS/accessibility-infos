@@ -6,6 +6,7 @@
   "author": "SZS-KIT",
   "license": "MIT",
   "devDependencies": {
-    "csv": "^0.4.0"
+    "csv": "^0.4.0",
+    "xlsx": "^0.7.10"
   }
 }

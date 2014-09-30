@@ -1,0 +1,51 @@
+{
+"Geb.-Nr.":"nb",
+"Name":"name",
+"Adresse":"adress",
+"Notruf":"emergencyNb",
+
+"Haupteingang":"MainEntrance",					
+"stufenlos":"stairLess",
+"Anzahl Stufen":"nbStairs",
+"Rampe":"ramp",	
+"Eingangstür":"entrance",
+"Türöffner": "doorOpener",
+"Drehtür":"revolvingDoor",
+"schwer zu öffnen":"hardToOpen",
+"Gefahrenstellen":"dangerZones",
+
+"Nebeneingang":"secEntrance",					
+
+"Gefahrenquellen (unterpendelbare Treppen)":"dangerZonesUnderStairs",	
+"vorhanden":"present",
+"Beschreibung":"description",
+
+"Fahrstuhl":"lift"				,				
+"erreichbare Stockwerke":"accessibleFloors",
+"Bedienfeld rollstuhlgerecht":"wheelChairAccessibleControls"	,
+"Brailleschrift": "braille",
+"Profilschrift":"ProfileWriting",
+"Stockwerkansage":"floorAnnouncement",
+"Stockwerkanzeige":"floorDisplay",
+"Nutzungsberechtigung":"allowAccessFor",
+"Türbreite":"doorWidth",
+"Abmessungen innen":"innerDimentions",
+
+"Besonderheiten":"specifics",
+"Infotheke":"informationBoard",
+
+"Behindertentoilette":"toiletForDisabled",
+"EURO-Schließsystem":"euroDoorSystem"	,
+"Bemerkungen":"remarks",
+
+"Sonstiges":"various",
+"Anmerkungen":"notes",
+"weitere Anmerkungen":"moreNotes",
+"Allgemeine Daten":"generalData",
+
+"Kontakt Hausmeister":"caretakerContact",
+"Tel. mobil":"mobileNb",
+"Tel. Festnetz":"phoneNb",
+"Ort Büro":"officeLocation",
+"Beschreiung Büro":"officeDescription"
+}
