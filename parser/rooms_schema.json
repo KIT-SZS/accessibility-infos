@@ -1,0 +1,41 @@
+{
+    "nb": {
+        "type": "string"
+    },
+    "buildingNb": {
+        "type": "string"
+    },
+    "name": {
+        "type": "string"
+    },
+    "floor": {
+        "type": "string"
+    },
+    "description":  {
+            "type": "string"
+    },
+   
+    "furniture":{
+      "permaChairs":{"type": "boolean"},
+      "typeOfDesks":{"type": "string"},
+      "wheelChairDesk":{"type": "boolean"},
+      "wheelChairPlace":{"type": "boolean"},
+      "normalTablesAndChairs":{"type": "boolean"}, 
+      "extraTablesPossible":{"type": "boolean"}, 
+      "reflectingBoard":{"type": "boolean"}
+    },
+    "powerPlugs":{
+      "amount":{"type": "integer"},
+      "position":{"type": "string"},
+      "extraLengthNeeded":{"type": "boolean"},
+    },
+
+    "AudioOutput":{
+      "information":{"type": "string"}
+    },
+
+    "Barriers":{"type": "string"},
+
+    "Various":{"type": "string"}
+}
+

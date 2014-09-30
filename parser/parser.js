@@ -2,9 +2,9 @@ var fs  = require('fs');
 var XLSX = require('xlsx');
 
 //load all our helper/maping data structures
-var de_En         = require("./deEn_tableFields.json");
-var structureMap  = require("./structureMap.json");
-var jsonSchema    = require("./schema.json");
+var de_En         = require("./buildings_deEn_tableFields.json");
+var structureMap  = require("./buildings_structureMap.json");
+var jsonSchema    = require("./buildings_schema.json");
 
 function createEntry(){
 
@@ -180,6 +180,37 @@ for(var R = range.s.r+startIndex; R <= range.e.r; ++R) {
 fs.writeFileSync("out.json",JSON.stringify(output) );
 
 /*
+Allgemeine Daten
+  Geb.-Nr.
+  Raum-Nr.
+  Name
+  Stockwerk
+  Beschreibung
+  Alternativer Zugang Beschreibung
+
+Mobiliar						
+  festeBestuhlung
+  Art der Tische	
+  unterfahrbare Tische
+  normale Tische/Stühle
+  Möglichkeit extra Tisch einzurichten
+	spiegelndeTafeln	
+
+Steckdosen
+  Anzahl
+  Ort
+  "Verlängerungs-kabel nötig"
+
+Audioausgang
+
+Barrieren
+
+Sonstiges
+
+
+*/
+
+/*
 Geb.-Nr.	
 Name 	
 Adresse Gebäude
@@ -215,7 +246,17 @@ Fahrstuhl
   Bedienfeld rollstuhlgerecht	
   Brailleschrift	
   Profilschrift
-  Stockwerkansage	
+  Stockwerkansage	Allgemeine Daten						Mobiliar						Steckdosen					
+Geb.-Nr.	Raum-Nr.	"Name
+Raum"	Stockwerk	Beschreibung	"Alternativer Zugang
+Beschreibung"	"feste
+Bestuhlung"	"Art der
+Tische"	unterfahrbare Tische	"normale Tische/
+Stühle"	"Möglichkeit extra
+Tisch einzurichten"	"spiegelnde
+Tafeln"	Anzahl	Ort	"Verlängerungs-
+kabel nötig"	Audioausgang	Barrieren	Sonstiges
+
   Stockwerkanzeige	
   Nutzungsberechtigung
   Türbreite
