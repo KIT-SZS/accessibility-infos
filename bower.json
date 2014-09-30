@@ -1,0 +1,16 @@
+{
+  "name": "accessibility-web",
+  "version": "0.0.0",
+  "homepage": "https://github.com/KIT-SZS/accessibility-web",
+  "authors": [
+    "Mark@ira.uka.de / SZS-KIT"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "core-ajax": "Polymer/core-ajax#~0.4.1",
+    "i18next": "~1.7.4",
+    "paper-dropdown": "Polymer/paper-dropdown#~0.4.0",
+    "paper-radio-group": "Polymer/paper-radio-group#~0.4.0"
+  }
+}

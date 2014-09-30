@@ -3,12 +3,15 @@
 <link rel="import" href="components/paper-dropdown/paper-dropdown.html">
 <link rel="import" href="components/paper-item/paper-item.html">
 
+<link rel="import" href="components/core-ajax/core-ajax.html">
 <link rel="import" href="components/core-selector/core-selector.html">
 <link rel="import" href="components/core-collapse/core-collapse.html">
 
 <link rel="import" href="accessibility-map.html">
 
 <script src="Set.js"></script>
+<script src="components/i18next/i18next.js"></script>
+
 
 <polymer-element name="accessibility-infos">
 <template>
@@ -78,17 +81,17 @@
                  <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                    <template if="{{selectedBuilding[item] | isNotObject}}">
                       <div>
-                        <div class="itemName">{{item}}</div>
-                        <div class="itemText">{{selectedBuilding[item] | toGermanBoolean}}</div>
+                        <div class="itemName">{{item | translator(item)}} </div>
+                        <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
                       </div>
                    </template>
                    <template if="{{selectedBuilding[item] | isObject}}">
                         <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
-                          <h5 style="width:100%"> {{item}} </h5>
+                          <h5 style="width:100%"> {{item | translator(item) }} </h5>
                             <section>
                               <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
                                 <div>
-                                  <div class="itemName"> {{subitem}} </div>
+                                  <div class="itemName"> {{subitem| translator(subitem)}} </div>
                                   <div class="itemText"> {{selectedBuilding[item][subitem] | toGermanBoolean }} </div>
                                 </div>
                               </template>
@@ -135,12 +138,18 @@
           <accessibility-map> </accessibility-map>
         </template>
       </section>
-
   </article>  
+
+
+  <!--important stuff-->
+  <core-ajax auto url="parser/out.json" handleAs="json" on-core-error="{{buildingsRawResponse}}" response="{{buildingsRaw}}" sync=true></core-ajax>
+  
 
 </template>
 <script>
   Polymer("accessibility-infos", {
+    buildingsRaw:null,
+
 
     visualDisabilities:null,
     hearingDisabilities:null,
@@ -170,10 +179,8 @@
       this.hearingDisabilities = ["schwerhörig","gehörlos","NA"];
       this.movementDisabilities=["gehbehindert","rollstullfahrer","NA"];
 
-      /*i18n.init(
-      {preload: ['en', 'fr']},
-      this.t.bind(this)
-      );*/
+      var options = { resGetPath: 'locales/__lng__/__ns__-__lng__.json',load:['de-DE'], preload: ['de-DE'],lngWhitelist: ['de-DE'],fallbackLng:'de-DE',fallbackToDefaultNS: true  };
+      i18n.init(options, function(t) {console.log("internationalization loaded");});
 
       //FILTERING: should be in english ??
       this.disabilityFieldMap = {
@@ -369,6 +376,18 @@
     attached:function(){
       this.updateBasedOnDisability();
     },
+    domReady:function(){
+        var foo = i18n.t('app.name');
+        console.log("blah1", foo);
+
+
+       this.async(function(foo){
+        var foo = i18n.t('app.name');
+        console.log("blah", foo);
+      },null,1000);
+
+    },
+
     //attribute change handlers
     selectedVisualDisabilityChanged:function(){
       this.updateBasedOnDisability();
@@ -394,7 +413,17 @@
       this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
       console.log( this.filteredSelectedRoom );
     },
-    
+
+    buildingsRawChanged:function(){
+      console.log("buildingsRawChanged",this.buildingsRaw);
+      this.buildings = this.buildingsRaw;
+    },
+    //event handlers
+    buildingsRawResponse:function(){
+      console.log("got buildings data");
+    },    
+
+
     //helpers
     updateBasedOnDisability:function(){
       if(this.selectedVisualDisability == "sehbehindert" || this.selectedVisualDisability == "NA")
@@ -408,6 +437,11 @@
       this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
     },
     filterByDisability:function( data ){
+
+      var foo = i18n.t('app.name');
+        console.log("APPP NAAAAAME", foo);
+
+
       var fieldMapVisual = this.disabilityFieldMap[this.selectedVisualDisability];
       var fieldMapHearing = this.disabilityFieldMap[this.selectedHearingDisability];
       var fieldMapMovement = this.disabilityFieldMap[this.selectedMovementDisability];
@@ -674,7 +708,15 @@
     },
     isBoolean: function(o){
       return typeof(o) === "boolean";
-    }
+    },
+    //FIXME: for whatever reason "translate"(the word) does not work
+    translator: function(o, key){
+      var i18nKey = 'app.generic.'+key;
+      var translation = i18n.t('app.generic.'+key);
+      if(translation == i18nKey) translation = o;
+      //console.log("translating",o,key,"to",translation);
+      return translation;
+    },
 
   });
 </script>

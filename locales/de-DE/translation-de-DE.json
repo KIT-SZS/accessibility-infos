@@ -1,0 +1,45 @@
+{
+    "app": {
+      "name": "accessibility-infos",
+      "generic":{
+        "nb":"Nummer",
+        "name":"Name",
+        "adress":"Adresse",
+        "description":"Beschreibung",
+        "entrance":"Eingang",
+        "access":"Zugang",
+        "floors":"Stockwerke",
+        "controls":"Kontrolle",
+        "dimentions":"Abmessungen",
+        
+        "inside":"Innen",
+        "dangers":"Gefahren",
+
+        "toiletForDisabled":"Behindertentoilette",
+
+        "euroDoor":"EURO-Schließsystem",
+        "remarks":"Bemerkungen",
+
+
+        "hardToOpen":"schwer zu öffnen",
+
+        "mainEntrance":"Haupteingang",
+        "secEntrance":"Nebeneingang",
+        "ramp":"Rampe",
+        "stairs":"Treppen",
+        "lift":"Aufzug",
+        "present":"anwesend",
+        "amount":"Anzahl",
+        "revolvingDoor":"Drehtür",
+        "doorOpener":"Türöffner",
+        "dangerPoints":"Gefahrenstellen",
+
+
+        "emergencyNb":"Notruf",
+        "notes":"Anmerkungen",
+        "various":"Sonstiges",
+        "infoBooth": "Infotheke"
+
+       }
+    }
+}
