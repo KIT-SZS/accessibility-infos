@@ -1,0 +1,26 @@
+{
+  "generalData.nb":"nb",
+  "generalData.buildingNb":"buildingNb",
+  "generalData.name":"name",
+  "generalData.floor":"floor",
+  "generalData.description":"description",
+  "generalData.altEntranceDescription":"altEntranceDescription",
+  
+
+  "furniture.permaChairs": "furniture.permaChairs",
+  "furniture.typeOfDesks": "furniture.typeOfDesks",
+  "furniture.wheelChairDesk": "furniture.wheelChairDesk",
+  "furniture.wheelChairPlace": "furniture.wheelChairPlace",
+  "furniture.normalTablesAndChairs": "furniture.normalTablesAndChairs",
+  "furniture.extraTablesPossible": "furniture.extraTablesPossible",
+  "furniture.reflectingBoard": "furniture.reflectingBoard",
+       
+  "powerPlugs.amount":"powerPlugs.amount",
+  "powerPlugs.position":"powerPlugs.position",
+  "powerPlugs.extraLengthNeeded":"powerPlugs.extraLengthNeeded",
+
+  "audioOutput.information":"AudioOutput",
+  "barriers.barriers":"Barriers",
+  "various.various": "Various"
+}
+

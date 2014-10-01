@@ -155,7 +155,7 @@ function parseData(workBook, sheetName, outputName)
   console.log("Converting data");
   //load all our helper/maping data structures
   var baseName = "./"+outputName;
-  var de_En         = require("./buildings_deEn_tableFields.json");
+  var de_En         = require("./deEn_tableFields.json");
   var structureMap  = require(baseName+"_structureMap.json");
   var jsonSchema    = require(baseName+"_schema.json");
 
