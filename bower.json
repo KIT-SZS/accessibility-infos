@@ -11,6 +11,11 @@
     "core-ajax": "Polymer/core-ajax#~0.4.1",
     "i18next": "~1.7.4",
     "paper-dropdown": "Polymer/paper-dropdown#~0.4.0",
-    "paper-radio-group": "Polymer/paper-radio-group#~0.4.0"
+    "paper-radio-group": "Polymer/paper-radio-group#~0.4.0",
+    "core-header-panel": "Polymer/core-header-panel#~0.4.1",
+    "core-toolbar": "Polymer/core-toolbar#~0.4.1",
+    "paper-icon-button": "Polymer/paper-icon-button#~0.4.1",
+    "core-tooltip": "Polymer/core-tooltip#~0.4.1",
+    "core-pages": "Polymer/core-pages#~0.4.1"
   }
 }

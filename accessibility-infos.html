@@ -2,10 +2,15 @@
 <link rel="import" href="components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="components/paper-dropdown/paper-dropdown.html">
 <link rel="import" href="components/paper-item/paper-item.html">
+<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="components/core-ajax/core-ajax.html">
 <link rel="import" href="components/core-selector/core-selector.html">
+<link rel="import" href="components/core-header-panel/core-header-panel.html">
+<link rel="import" href="components/core-toolbar/core-toolbar.html">
 <link rel="import" href="components/core-collapse/core-collapse.html">
+<link rel="import" href="components/core-tooltip/core-tooltip.html">
+<link rel="import" href="components/core-pages/core-pages.html">
 
 <link rel="import" href="accessibility-map.html">
 
@@ -16,131 +21,148 @@
 <polymer-element name="accessibility-infos">
 <template>
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
-  <article id="controls"> 
-    <section>
-      <h4>Sehen</h4>
-      <paper-radio-group selected="{{selectedVisualDisability}}">
-        <template repeat="{{disability in visualDisabilities}}">
-          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-        </template>
-      </paper-radio-group>
-    </section>
+  <core-header-panel flex mode="seamed">
+      <core-toolbar>
+        <core-selector selected="1" id="menuItems">
+          <core-tooltip label="Filter by disability">
+            <paper-icon-button icon="menu"></paper-icon-button>
+          </core-tooltip>
+          <core-tooltip label="Filter by disability">
+            <paper-icon-button icon="menu"></paper-icon-button>
+          </core-tooltip>
+        </core-selector>
 
-    <section>
-      <h4>Hören</h4>
-      <paper-radio-group selected="{{selectedHearingDisability}}">
-        <template repeat="{{disability in hearingDisabilities}}">
-          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-        </template>
-      </paper-radio-group>
-    </section>
-
-    <section>
-      <h4>Gehen</h4>
-      <paper-radio-group selected="{{selectedMovementDisability}}">
-        <template repeat="{{disability in movementDisabilities}}">
-          <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-        </template>
-      </paper-radio-group>
-    </section>
-
-
-    <section>
-      <h4>Gebäude</h4>
-      <paper-dropdown selected="{{selectedBuildingIndex}}" id="buildingSelector">
-          <template repeat="{{building in buildings}}">
-            <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
-          </template>
-      </paper-dropdown>
-    </section>
-
-    <template if="{{selectedBuilding}}">
-      <section>
-        <h4>Räume</h4>
-          <paper-dropdown selected="{{selectedRoomIndex}}" id="roomSelector">
-              <template repeat="{{room in rooms[selectedBuilding.nb]}}">
-                <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
-              </template>
-          </paper-dropdown>
-      </section>
-    </template>
-
-    <section>
-      <h4>Kontakte</h4>
-      Notruf: 
-    </section>
-  </article>
-
-
-  <article id="data">
-      <section id="textData">
-        <template if="{{selectedBuilding && !filteredSelectedRoom}}">
-          <section id="buildingInfos">
-            <h4>Gebaude Informationen</h4>   
-              <core-selector selected="{{selectedBuildingInfo}}">
-                 <template repeat="{{item,i in selectedBuilding | getKeys}}" >
-                   <template if="{{selectedBuilding[item] | isNotObject}}">
-                      <div>
-                        <div class="itemName">{{item | translator(item)}} </div>
-                        <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
-                      </div>
-                   </template>
-                   <template if="{{selectedBuilding[item] | isObject}}">
-                        <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
-                          <h5 style="width:100%"> {{item | translator(item) }} </h5>
-                            <section>
-                              <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
-                                <div>
-                                  <div class="itemName"> {{subitem| translator(subitem)}} </div>
-                                  <div class="itemText"> {{selectedBuilding[item][subitem] | toGermanBoolean }} </div>
-                                </div>
-                              </template>
-                          </section>
-                        </core-collapse>
-                   </template>
+        <span flex>
+          <section >
+            <h4>Gebäude</h4>
+            <paper-dropdown selected="{{selectedBuildingIndex}}" id="buildingSelector">
+                <template repeat="{{building in buildings}}">
+                  <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
                 </template>
-              </core-selector>
+            </paper-dropdown>
           </section>
-        </template>
 
-        <template if="{{filteredSelectedRoom}}">
-            <section id="roomInfos">
-              <h4>Raum Informationen</h4>   
-
-                 <core-selector selected="{{selectedRoomInfo}}">
-                   <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
-                     <template if="{{filteredSelectedRoom[item] | isNotObject}}">
-                        <div>
-                          <div class="itemName">{{item | translator(item) }}</div>
-                          <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
-                        </div>
-                     </template>
-                     <template if="{{filteredSelectedRoom[item] | isObject}}">
-                          <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
-                            <h5 style="width:100%"> {{item | translator(item) }} </h5>
-                              <section>
-                                <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
-                                  <div>
-                                    <div class="itemName"> {{subitem | translator(subitem)}} </div>
-                                    <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
-                                  </div>
-                                </template>
-                            </section>
-                          </core-collapse>
-                     </template>
-                  </template>
-                </core-selector>
+          <template if="{{selectedBuilding}}">
+            <section>
+              <h4>Räume</h4>
+                <paper-dropdown selected="{{selectedRoomIndex}}" id="roomSelector">
+                    <template repeat="{{room in rooms[selectedBuilding.nb]}}">
+                      <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
+                    </template>
+                </paper-dropdown>
             </section>
-        </template>
-      </section>
-      <section id="mapData">
-        <template if="{{displayMode=='map'}}">
-          <accessibility-map> </accessibility-map>
-        </template>
-      </section>
-  </article>  
+          </template>
+        </span>
+         <span flex>
+           <section>
+            Notruf: 
+          </section>
+        </span>
+      </core-toolbar>
+      <div class="content" fit>
+        
+        <core-pages class="controls" selected="{{$.menuItems.selected}}" >
+          <div id="fake"></div>
+          <article id="controls"> 
+            <section>
+              <h4>Sehen</h4>
+              <paper-radio-group selected="{{selectedVisualDisability}}">
+                <template repeat="{{disability in visualDisabilities}}">
+                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                </template>
+              </paper-radio-group>
+            </section>
 
+            <section>
+              <h4>Hören</h4>
+              <paper-radio-group selected="{{selectedHearingDisability}}">
+                <template repeat="{{disability in hearingDisabilities}}">
+                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                </template>
+              </paper-radio-group>
+            </section>
 
+            <section>
+              <h4>Gehen</h4>
+              <paper-radio-group selected="{{selectedMovementDisability}}">
+                <template repeat="{{disability in movementDisabilities}}">
+                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                </template>
+              </paper-radio-group>
+            </section>
+
+          </article>
+        </core-pages>
+
+        <article id="data">
+            <section id="textData">
+              <template if="{{selectedBuilding && !filteredSelectedRoom}}">
+                <section id="buildingInfos">
+                  <h1>Gebaude Informationen</h1>   
+                    <core-selector selected="{{selectedBuildingInfo}}">
+                       <template repeat="{{item,i in selectedBuilding | getKeys}}" >
+                         <template if="{{selectedBuilding[item] | isNotObject}}">
+                            <div>
+                              <div class="itemName">{{item | translator(item)}} </div>
+                              <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
+                            </div>
+                         </template>
+                         <template if="{{selectedBuilding[item] | isObject}}">
+                              <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
+                                <h5 style="width:100%"> {{item | translator(item) }} </h5>
+                                  <section>
+                                    <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
+                                      <div>
+                                        <div class="itemName"> {{subitem| translator(subitem)}} </div>
+                                        <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
+                                      </div>
+                                    </template>
+                                </section>
+                              </core-collapse>
+                         </template>
+                      </template>
+                    </core-selector>
+                </section>
+              </template>
+
+              <template if="{{filteredSelectedRoom}}">
+                  <section id="roomInfos">
+                    <h1>Raum Informationen</h1>   
+
+                       <core-selector selected="{{selectedRoomInfo}}">
+                         <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
+                           <template if="{{filteredSelectedRoom[item] | isNotObject}}">
+                              <div>
+                                <div class="itemName">{{item | translator(item) }}</div>
+                                <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
+                              </div>
+                           </template>
+                           <template if="{{filteredSelectedRoom[item] | isObject}}">
+                                <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
+                                  <h5 style="width:100%"> {{item | translator(item) }} </h5>
+                                    <section>
+                                      <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
+                                        <div>
+                                          <div class="itemName"> {{subitem | translator(subitem)}} </div>
+                                          <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
+                                        </div>
+                                      </template>
+                                  </section>
+                                </core-collapse>
+                           </template>
+                        </template>
+                      </core-selector>
+                  </section>
+              </template>
+            </section>
+            <section id="mapData">
+              <template if="{{displayMode=='map'}}">
+                <accessibility-map> </accessibility-map>
+              </template>
+            </section>
+        </article>  
+      </div>
+   </core-header-panel>
   <!--data loaders-->
   <core-ajax auto url="buildings.json" handleAs="json" on-core-error="{{buildingsRawResponse}}" response="{{buildingsRaw}}" sync=true></core-ajax>
   <core-ajax auto url="roomsByBuilding.json"   handleAs="json" response="{{roomsRaw}}"   sync=true></core-ajax>
@@ -185,162 +207,9 @@
       var options = { resGetPath: 'locales/__lng__/__ns__-__lng__.json',load:['de-DE'], preload: ['de-DE'],lngWhitelist: ['de-DE'],fallbackLng:'de-DE',fallbackToDefaultNS: true  };
       i18n.init(options, function(t) {console.log("internationalization loaded");});
 
-      //FILTERING: should be in english ??
-      this.disabilityFieldMap = {}/* {
-         "sehbehindert":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:true,
-                typeOfDesks:true,
-                wheelChairDesk:false,
-                wheelChairPlace:false,
-                normalTablesAndChairs:true, 
-                extraTablesPossible:true,
-                reflectingBoard:true
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:false,	position:false},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         },
-         "blind":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:true,
-                typeOfDesks:true,
-                wheelChairDesk:false,
-                wheelChairPlace:false,
-                normalTablesAndChairs:true, 
-                extraTablesPossible:false,
-                reflectingBoard:false
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:false,	position:false},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         },
-         "schwerhörig":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:false,
-                typeOfDesks:false,
-                wheelChairDesk:false,
-                wheelChairPlace:false,
-                normalTablesAndChairs:false, 
-                extraTablesPossible:false,
-                reflectingBoard:false
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:true,	position:true},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         },
-         "gehörlos":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:false,
-                typeOfDesks:false,
-                wheelChairDesk:false,
-                wheelChairPlace:false,
-                normalTablesAndChairs:false, 
-                extraTablesPossible:false,
-                reflectingBoard:false
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:true,	position:true},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         },
-         "gehbehindert":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:true,
-                typeOfDesks:true,
-                wheelChairDesk:true,
-                wheelChairPlace:true,
-                normalTablesAndChairs:true, 
-                extraTablesPossible:true,
-                reflectingBoard:false
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:false,	position:false},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         },
-         "rollstullfahrer":{
-            building:{},
-            room:{
-              nb:true,name:true,floorName:true,description:true,access:true,
-              furniture:{
-                permaChairs:true,
-                typeOfDesks:true,
-                wheelChairDesk:true,
-                wheelChairPlace:true,
-                normalTablesAndChairs:true, 
-                extraTablesPossible:true,
-                reflectingBoard:false
-              },
-              powerPlugs:{
-                extraLengthNeeded:true,
-                list:true
-              },
-              audioOutput:{type:false,	position:false},
-              specifics:{
-                barriers:true,
-                more:true,
-              },
-              notes:true
-            }
-         }
-      };*/
-
-
-      this.buildings= [];
+      this.disabilityFieldMap = null;
+      this.buildings          = null;
+      this.rooms              = null;
     },
     attached:function(){
       this.updateBasedOnDisability();
@@ -360,12 +229,14 @@
     },
     selectedBuildingIndexChanged:function(){
       this.selectedBuilding = this.buildings[this.selectedBuildingIndex-1];
+
+      this.selectedRoomIndex = -1;
       this.selectedRoom = null;
       this.filteredSelectedRoom = null;
-      this.selectedRoomIndex = -1;
     },
     selectedBuildingChanged:function(){
       console.log("selected building changed", this.selectedBuilding);
+      this.filterBuilding();
     },
     selectedRoomIndexChanged:function(){
       console.log("selectedRoomIndexChanged",this.selectedRoomIndex);
@@ -374,8 +245,7 @@
     },
     selectedRoomChanged:function(){
       console.log("selected room changed", this.selectedRoom);
-      this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
-      console.log( this.filteredSelectedRoom );
+      this.filterRoom();
     },
 
     buildingsRawChanged:function(){
@@ -390,12 +260,6 @@
       console.log("filtersRawChanged");
       this.disabilityFieldMap = this.filtersRaw;
     },
-    //event handlers
-    buildingsRawResponse:function(){
-      console.log("got buildings data");
-    },    
-
-
     //helpers
     updateBasedOnDisability:function(){
       if(this.selectedVisualDisability == "sehbehindert" || this.selectedVisualDisability == "NA")
@@ -404,28 +268,40 @@
       }else if(this.selectedVisualDisability =="blind"){
         this.displayMode = 'text';
       }
-      
-      //should this be here
-      this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom );
+      this.filterRoom();
     },
-    filterByDisability:function( data ){
-      var type = "rooms";
+    filterRoom:function(){
+      console.log("this.selectedRoom", this.selectedRoom);
+      if(this.selectedRoom) this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom, "rooms" );
+    },
+    filterBuilding:function(){
+      console.log("this.selectedBuilding", this.selectedBuilding);
+      if(this.selectedBuilding) this.filteredSelectedBuilding = this.filterByDisability( this.filteredSelectedBuilding, "buildings" );
+    },
+    filterByDisability:function( data, type ){
+      if(!this.disabilityFieldMap) return data;
+      var type = type || "rooms";
+      console.log("filtering");
 
-      var fieldMapVisual = this.disabilityFieldMap[type][this.selectedVisualDisability];
-      var fieldMapHearing = this.disabilityFieldMap[type][this.selectedHearingDisability];
-      var fieldMapMovement = this.disabilityFieldMap[type][this.selectedMovementDisability];
+      var fieldMapVisual = this.disabilityFieldMap[type];
+      var fieldMapHearing = this.disabilityFieldMap[type];
+      var fieldMapMovement = this.disabilityFieldMap[type];
+
+      if(fieldMapVisual){ fieldMapVisual = fieldMapVisual[this.selectedVisualDisability]; }
+      else{ fieldMapVisual = null; }
+
+      if(fieldMapHearing){ fieldMapHearing = fieldMapHearing[this.selectedHearingDisability]; }
+      else{ fieldMapHearing = null; }
+
+      if(fieldMapMovement){ fieldMapMovement = fieldMapMovement[this.selectedMovementDisability]; }
+      else{ fieldMapMovement = null; }
+ 
 
       if(fieldMapVisual === undefined && fieldMapHearing === undefined && fieldMapMovement === undefined) return data;
 
-      var excludes = {};
-      var includes = {};
-
       var fieldMaps = [ fieldMapVisual, fieldMapHearing, fieldMapMovement ];
-      
-
       var result = {};
   
-      console.log(fieldMaps);
 
       function deepValue(obj, path){
           for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
@@ -435,7 +311,7 @@
       };
 
 
-      function fooYa(fieldName)
+      function validField(fieldName)
       {
         var displayField = false;
         for(var i=0;i<fieldMaps.length;i++)
@@ -445,11 +321,9 @@
           var bang = deepValue(fieldMap, fieldName);
           displayField = displayField | bang;
         }
-        console.log("display field",fieldName ,Boolean(displayField));
+        //console.log("display field",fieldName ,Boolean(displayField));
         return displayField;
       }
-      //fooYa("room.audioOutput.position")
-      //fooYa("room.furniture.extraTablesPossible")
 
       function iterate(obj, propPath, result) {
         for (var property in obj) {
@@ -470,7 +344,7 @@
               if(propPathSub[0] == ".") propPathSub = propPathSub.substring(1);
               
               console.log("propPath",propPathSub);
-              if(fooYa(propPathSub))
+              if(validField(propPathSub))
               {
                 result[property] = obj[property];
               }
@@ -481,183 +355,8 @@
 
       var propPath = "";
       iterate(this.selectedRoom, propPath, result);
-
-      console.log("result",result);
       
       return result;
-
-
-
-
-      function extractFields( destination, rawData ){
-        var mainKey = rawData[0];
-        if(!destination.hasOwnProperty(mainKey)) destination[mainKey] = {};
-        if(rawData.length==1)
-        {
-          destination[mainKey]= "leaf";
-          return;
-        }
-
-        rawData = rawData.slice(1);
-       
-        var foo = destination[mainKey];
-        for(var z= 0;z<rawData.length;z++)
-        { 
-          if( z == rawData.length-1)
-          {
-            foo[rawData[z]] = "leaf";
-          }else
-          {
-            foo[rawData[z]] = {};
-            foo = foo[rawData[z]];
-          }
-        }
-      }
-
-      
-      for(var u =0;u<fieldMaps.length;u++)
-      {
-        var fieldMap = fieldMaps[u];
-        if(!(fieldMap)) continue
-        fieldMap = fieldMap[type];
-        //deal with excludes
-        if( "exclude" in fieldMap )
-        {
-          for(var i =0;i<fieldMap.exclude.length;i++)
-          {
-            var tmpExcludes = fieldMap.exclude[i].split(".");
-            extractFields( excludes, tmpExcludes );
-          }
-        }
-        if( "include" in fieldMap )
-        {
-          for(var i =0;i<fieldMap.include.length;i++)
-          {
-            var tmpIncludes = fieldMap.include[i].split(".");
-            extractFields( includes, tmpIncludes );
-          }
-        }
-      }
-
-     //console.log("excludes", excludes);
-     console.log("includes", includes);
-
-
-      //if(excludes.length ==0) return data;
-
-      var result = {};
-      var self = this;
-
-
-      function isLeaf( item ){
-        var isLeaf = false;
-        //console.log("is item leaf", item);
-        if(self.isObject(item))
-        {
-          var foo = Object.keys(item);
-          isLeaf = (foo.length ==1 && item[foo[0]] == "leaf");
-          console.log("isLeaf", item);
-          return isLeaf
-        }
-        return true;
-      }
-
-      function regenData( input, output, includes, excludes )
-      {
-         
-         //console.log("input", input, "output", output, "includes", includes,"excludes", excludes);
-
-         if(!(output) || !(input)) return;
-
-         var keysToKeep = [];
-         if(includes){ 
-            if( isLeaf( includes ) ){
-              if(self.isObject(includes))
-              {
-                keysToKeep = Object.keys(includes);}
-            }else{
-            keysToKeep = Object.keys(input); }
-
-            //console.log("includes", includes);
-         }
-         else{
-            keysToKeep = Object.keys(input);
-         }
-        
-         console.log("keysToKeep", keysToKeep);
-
-         for(var key in input)
-         {
-            var item = input[key];
-            
-            if(self.isObject(item)){
-              //console.log("going down into ", key, item);
-              var subIncludes = undefined;
-              var subExcludes = undefined;
-              
-              if( includes && key in includes) subIncludes = includes[key];
-              if( excludes && key in excludes) subExcludes = excludes[key];
-
-              output[key]= {};
-
-              regenData( item, output[key], subIncludes, subExcludes);
-              //console.log("going up", key, item);
-            }
-            else
-            {
-              var isPresent = keysToKeep.indexOf( key )
-              if( isPresent !== -1 )
-              {
-                //console.log("adding simple item", key, item);
-                output[key]= item;
-              }
-            }
-         }
-         return;
-      }
-
-      regenData( this.selectedRoom, result, includes, excludes);
-      console.log("result", result);
-      return result;
-
-      for(var key in this.selectedRoom)
-      {
-        var item = this.selectedRoom[key];
-        
-        console.log("excludes level 0", Object.keys(excludes));
-
-        if(this.isObject(item))
-        {
-          result[key]= {};
-          for(var subKey in item)
-          {
-            var subItem = this.selectedRoom[key][subKey];
-
-            if( Object.keys(excludes).indexOf( key) !== -1 && excludes[key].indexOf( subKey ) !== -1)
-            {
-              console.log("ignoring", subKey, subItem);
-            }
-            else{ 
-                result[key][subKey] = subItem;
-            }
-          }
-        }
-        else{
-           if( Object.keys(excludes).indexOf( key) == -1  || excludes[key].length == 0)
-            {
-              result[key] = item;
-            }
-          else{
-            console.log("ignoring", key, item, excludes[key]);
-          }
-        }
-
-      }
-
-      console.log("result", result);
-
-      return result;
-
     },
     toGermanBoolean:function(source){
       if(source == undefined || source == null) return "";
@@ -680,7 +379,7 @@
     isBoolean: function(o){
       return typeof(o) === "boolean";
     },
-    //FIXME: for whatever reason "translate"(the word) does not work
+    //FIXME: for whatever reason renaming this method to "translate"does not work ?
     translator: function(o, key){
       var i18nKey = 'app.generic.'+key;
       var translation = i18n.t('app.generic.'+key);
@@ -688,6 +387,19 @@
       //console.log("translating",o,key,"to",translation);
       return translation;
     },
+    cleanSub:function(o)
+    {
+      if(!this.isObject(o)) return o;
+      var res="";
+      for(var key in o)
+      {
+        var val = o[key];
+        var rKey = this.translator(key,key);
+        val = this.toGermanBoolean(val);
+        res+=rKey+" : "+val+"\n";
+      }
+      return res;//JSON.stringify(o);
+    }
 
   });
 </script>

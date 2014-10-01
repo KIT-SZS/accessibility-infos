@@ -58,9 +58,9 @@
         "typeOfDesks":"Art der Tische",
         "wheelChairDesk":"unterfahrbare Tische",
         "normalTablesAndChairs":"normale Tische/Stühle",
-        "extraTablesPossible":"Möglichkeit extra Tisch einzurichten"
+        "extraTablesPossible":"Möglichkeit extra Tisch einzurichten",
 
-
+        "absent":"Abwesend"
        }
     }
 }
