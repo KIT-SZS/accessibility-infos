@@ -9,6 +9,7 @@
         "entrance":"Eingang",
         "access":"Zugang",
         "floors":"Stockwerke",
+        "floor":"Stockwerk",
         "controls":"Kontrolle",
         "dimentions":"Abmessungen",
         
@@ -38,7 +39,27 @@
         "emergencyNb":"Notruf",
         "notes":"Anmerkungen",
         "various":"Sonstiges",
-        "infoBooth": "Infotheke"
+        "infoBooth": "Infotheke",
+
+        "buildingNb":"geb Num",
+
+        "furniture":"Mobilar",
+        "Barriers":"Barrieren",
+        "powerPlugs":"Steckdosen",
+        "extraLengthNeeded":"Verlängerungs-kabel nötig",
+
+        "Various":"Sonstiges",
+        "reflectingBoard":"Spiegelnde Tafeln",
+        "AudioOutput":"Audioausgang",
+
+
+        "altEntranceDescription": "Alternativer Zugang Beschreibung",
+        "permaChairs":"Feste Bestuhlung",
+        "typeOfDesks":"Art der Tische",
+        "wheelChairDesk":"unterfahrbare Tische",
+        "normalTablesAndChairs":"normale Tische/Stühle",
+        "extraTablesPossible":"Möglichkeit extra Tisch einzurichten"
+
 
        }
     }

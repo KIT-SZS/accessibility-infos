@@ -64,12 +64,12 @@ h5{
   color:blue;
   display: inline-block;
   font-weight: bold;
-  width: 100px;
+  width: 250px;
 }
 
 .itemText{
   color: black;
   display: inline-block;
-  text-align: center;
+  /*text-align: center;*/
   width: 400px;
 }
