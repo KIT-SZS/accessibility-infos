@@ -1,14 +1,10 @@
 var fs  = require('fs');
 var XLSX = require('xlsx');
 
-//load all our helper/maping data structures
-var de_En         = require("./buildings_deEn_tableFields.json");
-var structureMap  = require("./buildings_structureMap.json");
-var jsonSchema    = require("./buildings_schema.json");
 
-function createEntry(){
 
-  var template = {
+function createEntry(schema){
+  var buildingTemplate = {
     nb:"",
     name:"",
     adress:"",
@@ -68,7 +64,40 @@ function createEntry(){
       notes:""
     }
   }
-  return template;
+
+  var roomTemplate ={ 
+    nb:"",
+    buildingNb:"",
+    name:"",
+    floor:"",
+    description:"",
+    altEntranceDescription:"",
+   
+    furniture:{
+      permaChairs:false,
+      typeOfDesks:false,
+      wheelChairDesk:false,
+      wheelChairPlace:"",
+      normalTablesAndChairs:true,
+      extraTablesPossible:false,
+      reflectingBoard:false,
+    },
+    powerPlugs:{
+      amount:0,
+      position:"",
+      extraLengthNeeded:"",
+    },
+    AudioOutput:{
+      information:""
+    },
+    Barriers:"",
+    Various:""
+  };
+
+  
+  var instance = buildingTemplate;//generator.generate();
+  if(schema == "rooms") instance = roomTemplate;
+  return instance;
 }
 
 
@@ -96,7 +125,7 @@ function deepAssign(obj, value, path) {
     obj[path[i]] = value;
 }
 
-function deepForceType(obj, value, path)
+function deepForceType(obj, value, path, schema)
 {
     path = path.split('.');
     for (i = 0; i < path.length - 1; i++)
@@ -104,7 +133,7 @@ function deepForceType(obj, value, path)
 
     var loc = path[i];
     var newValue = value;
-    var schemaVal = deepValue(jsonSchema, path.join("."));
+    var schemaVal = deepValue(schema, path.join("."));
     //console.log("schemaVal",path, schemaVal);
     switch(schemaVal.type){
       case "integer":
@@ -119,66 +148,95 @@ function deepForceType(obj, value, path)
     obj[loc] = newValue;
 }
 
-var structure = {};
-var output = [];
 
 
+function parseData(workBook, sheetName, outputName)
+{
+  console.log("Converting data");
+  //load all our helper/maping data structures
+  var baseName = "./"+outputName;
+  var de_En         = require("./buildings_deEn_tableFields.json");
+  var structureMap  = require(baseName+"_structureMap.json");
+  var jsonSchema    = require(baseName+"_schema.json");
+
+  var output = [];
+
+  var sheet = workBook.Sheets[sheetName];
+  var range = XLSX.utils.decode_range(sheet['!ref']);
+
+  //console.log("Range",range);
+  var startIndex = 2; //what lines/rows to ignore
+  for(var R = range.s.r+startIndex; R <= range.e.r; ++R) {
+    var currentEntry = createEntry( outputName );
+    var tmpFields = {};
+    var titleDe = "";
+    var titleEn = "";
+    
+    for(var C = range.s.c; C <= range.e.c; ++C) {
+      var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
+      var cell = sheet[cellref];
+
+      //extract main category (upper row)
+      var titleCellRef = XLSX.utils.encode_cell({c:C, r:0});
+      var titleCell = sheet[titleCellRef];
+      if(titleCell){
+        titleDe = sheet[titleCellRef].w;
+        titleEn = de_En[titleDe];
+      }
+
+      //extract sub category (second row from top)
+      var subtitleCellRef = XLSX.utils.encode_cell({c:C, r:1});
+      var subtitleDe = sheet[subtitleCellRef].w;
+      var subtitleEn = de_En[subtitleDe];
+
+      var path = titleEn+"."+subtitleEn
+      //console.log('"'+titleDe+"."+subtitleDe+'":');
+      //console.log('"'+path+'":');
+      var mappedPath = structureMap[path];
+      //console.log("mappedPath",path, mappedPath);
+      if(!mappedPath) continue;
+      
+      var value = "";
+      if(cell) value = cell.w;
+
+      //set output value
+      deepAssign(currentEntry, value, mappedPath);
+      //format when needed
+      deepForceType(currentEntry, value, mappedPath, jsonSchema);
+
+    }
+    //console.log("Result",currentEntry);
+    //throw new Error("");
+    output.push( currentEntry );
+  }
+
+  fs.writeFileSync(outputName+".json",JSON.stringify(output) );
+}
+
+////////////
 var workbook = XLSX.readFile('./parser/tabelle_gesamt_stand_2014-09-24.xlsx',{cellHTML:false})
-
-var sheetNames = workbook.SheetNames;
 
 var buildings = workbook.Sheets['Gebäude']; 
 var rooms     = workbook.Sheets['Räume']; 
 
-var sheet = buildings;
-var range = XLSX.utils.decode_range(sheet['!ref']);
+//parseData( workbook, "Gebäude", "buildings" );
+//parseData( workbook, "Räume", "rooms" );
 
-console.log("buildings",range);
-var startIndex = 2; //what lines/rows to ignore
-for(var R = range.s.r+startIndex; R <= range.e.r; ++R) {
-  var currentEntry = createEntry();
-  var tmpFields = {};
-  var titleDe = "";
-  var titleEn = "";
-  
-  for(var C = range.s.c; C <= range.e.c; ++C) {
-    var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
-    var cell = sheet[cellref];
+//FIXME: temporary hack for rooms data structure
 
-    var titleCellRef = XLSX.utils.encode_cell({c:C, r:0});
-    var titleCell = sheet[titleCellRef];
-    if(titleCell){
-      titleDe = sheet[titleCellRef].w;
-      titleEn = de_En[titleDe];
-    }
+var rooms = JSON.parse( fs.readFileSync("rooms.json") );
 
-    var subtitleCellRef = XLSX.utils.encode_cell({c:C, r:1});
-    var subtitleDe = sheet[subtitleCellRef].w;
-    var subtitleEn = de_En[subtitleDe];
+var roomsOutput = {};
 
-    var path = titleEn+"."+subtitleEn
-    //console.log('"'+path+'":');
-    var mappedPath = structureMap[path];
-    if(!mappedPath) continue;
-    
-    var value = "";
-    if(cell) value = cell.w;
-
-    //set output value
-    deepAssign(currentEntry, value, mappedPath);
-    //format when needed
-    deepForceType(currentEntry, value, mappedPath);
-
-  }
-  //console.log("Result",currentEntry);
-  //throw new Error("");
-  output.push( currentEntry );
+for(var i=0;i<rooms.length;i++)
+{
+  var room = rooms[i];
+  var buildingNb = room.buildingNb;
+  if(!(room.buildingNb in roomsOutput)) roomsOutput[buildingNb] = [];
+  roomsOutput[buildingNb].push( room );
 }
-
-
-
-fs.writeFileSync("out.json",JSON.stringify(output) );
-
+console.log("roomsOutput",roomsOutput);
+fs.writeFileSync("roomsByBuilding.json",JSON.stringify(roomsOutput) );
 /*
 Allgemeine Daten
   Geb.-Nr.

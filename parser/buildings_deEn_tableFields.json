@@ -47,5 +47,24 @@
 "Tel. mobil":"mobileNb",
 "Tel. Festnetz":"phoneNb",
 "Ort Büro":"officeLocation",
-"Beschreiung Büro":"officeDescription"
+"Beschreiung Büro":"officeDescription",
+"Anzahl":"amount",
+"Ort":"location",
+
+"Mobilar":"furniture",
+"Geb.-Nr.":"buildingNb",
+"Raum-Nr.":"nb",
+"Name Raum":"name",	
+"Stockwerk":"floor",
+"Alternativer Zugang Beschreibung":"altEntranceDescription",
+"Feste Bestuhlung":"permaChairs",
+"Art der Tische":"typeOfDesks",
+"unterfahrbare Tische":"wheelChairDesk",
+"normale Tische/Stühle":"normalTablesAndChairs",
+"Möglichkeit extra Tisch einzurichten":"extraTablesPossible",
+"Spiegelnde Tafeln":"reflectingBoard",
+"Steckdosen":"powerPlugs",
+"Audioausgang":"audioOutput",
+"Verlängerungs-kabel nötig":"extraLengthNeeded",
+"Barrieren":"barriers"
 }
