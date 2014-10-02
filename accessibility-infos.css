@@ -1,7 +1,4 @@
 
-table, th, td {
-   border: 1px solid black;
-}
 
 /*
 #controls{
@@ -16,12 +13,25 @@ table, th, td {
   background:white;
 }
 
-/*#data{
-  position:absolute;
-  width:100%;height:100%;
-  padding:5px;
-  margin-left: 10px;
-}*/
+#controls:focus{
+  outline: -webkit-focus-ring-color auto 5px;
+  color:red;
+}
+
+#placeHolder{
+  text-align: center;
+  vertical-align: middle;
+  height: 100%;
+  display: table;
+  width: 100%;
+
+}
+
+#placeHolder >h1{
+  display: table-cell;
+  top: 50%;
+  vertical-align: middle;
+}
 
 
 /*for map ---------------*/
@@ -135,7 +145,19 @@ core-pages{
 
 
 [drawer] {
-      background-color: white;
-      border-right: 1px solid #ccc;
-      width:300px;
-    }
+    background-color: white;
+    border-right: 1px solid #ccc;
+    width:300px;
+  }
+
+[drawer]:focus {
+  outline: -webkit-focus-ring-color auto 5px;
+  }
+
+paper-icon-button{
+  text-transform: capitalize;
+}
+
+paper-icon-button:focus{
+  outline: -webkit-focus-ring-color auto 5px;
+}
