@@ -11,6 +11,7 @@
 <link rel="import" href="components/core-collapse/core-collapse.html">
 <link rel="import" href="components/core-tooltip/core-tooltip.html">
 <link rel="import" href="components/core-pages/core-pages.html">
+<link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
 
 <link rel="import" href="accessibility-map.html">
 
@@ -23,15 +24,9 @@
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
   <core-header-panel flex mode="seamed">
       <core-toolbar>
-        <core-selector selected="1" id="menuItems">
-          <core-tooltip label="Filter by disability">
-            <paper-icon-button icon="menu"></paper-icon-button>
-          </core-tooltip>
-          <core-tooltip label="Filter by disability">
-            <paper-icon-button icon="menu"></paper-icon-button>
-          </core-tooltip>
-        </core-selector>
-
+        <core-tooltip label="Filter by disability">
+          <paper-icon-button icon="menu" on-tap="{{toggleControls}}"></paper-icon-button>
+        </core-tooltip>
         <span flex>
           <section >
             <h4>Gebäude</h4>
@@ -60,91 +55,56 @@
         </span>
       </core-toolbar>
       <div class="content" fit>
-        
-        <core-pages class="controls" selected="{{$.menuItems.selected}}" >
-          <div id="fake"></div>
-          <article id="controls"> 
-            <section>
-              <h4>Sehen</h4>
-              <paper-radio-group selected="{{selectedVisualDisability}}">
-                <template repeat="{{disability in visualDisabilities}}">
-                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                </template>
-              </paper-radio-group>
-            </section>
+        <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
+            <article id="controls" drawer> 
+              <section>
+                <h4>Sehen</h4>
+                <paper-radio-group selected="{{selectedVisualDisability}}">
+                  <template repeat="{{disability in visualDisabilities}}">
+                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </section>
 
-            <section>
-              <h4>Hören</h4>
-              <paper-radio-group selected="{{selectedHearingDisability}}">
-                <template repeat="{{disability in hearingDisabilities}}">
-                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                </template>
-              </paper-radio-group>
-            </section>
+              <section>
+                <h4>Hören</h4>
+                <paper-radio-group selected="{{selectedHearingDisability}}">
+                  <template repeat="{{disability in hearingDisabilities}}">
+                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </section>
 
-            <section>
-              <h4>Gehen</h4>
-              <paper-radio-group selected="{{selectedMovementDisability}}">
-                <template repeat="{{disability in movementDisabilities}}">
-                  <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                </template>
-              </paper-radio-group>
-            </section>
-
-          </article>
-        </core-pages>
-
-        <article id="data">
-            <section id="textData">
-              <template if="{{selectedBuilding && !filteredSelectedRoom}}">
-                <section id="buildingInfos">
-                  <h1>Gebaude Informationen</h1>   
-                    <core-selector selected="{{selectedBuildingInfo}}">
-                       <template repeat="{{item,i in selectedBuilding | getKeys}}" >
-                         <template if="{{selectedBuilding[item] | isNotObject}}">
-                            <div>
-                              <div class="itemName">{{item | translator(item)}} </div>
-                              <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
-                            </div>
-                         </template>
-                         <template if="{{selectedBuilding[item] | isObject}}">
-                              <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
-                                <h5 style="width:100%"> {{item | translator(item) }} </h5>
-                                  <section>
-                                    <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
-                                      <div>
-                                        <div class="itemName"> {{subitem| translator(subitem)}} </div>
-                                        <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
-                                      </div>
-                                    </template>
-                                </section>
-                              </core-collapse>
-                         </template>
-                      </template>
-                    </core-selector>
-                </section>
-              </template>
-
-              <template if="{{filteredSelectedRoom}}">
-                  <section id="roomInfos">
-                    <h1>Raum Informationen</h1>   
-
-                       <core-selector selected="{{selectedRoomInfo}}">
-                         <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
-                           <template if="{{filteredSelectedRoom[item] | isNotObject}}">
+              <section>
+                <h4>Gehen</h4>
+                <paper-radio-group selected="{{selectedMovementDisability}}">
+                  <template repeat="{{disability in movementDisabilities}}">
+                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
+                  </template>
+                </paper-radio-group>
+              </section>
+            </article>
+          <article id="data" main>
+              <section id="textData">
+                <template if="{{selectedBuilding && !filteredSelectedRoom}}">
+                  <section id="buildingInfos">
+                    <h1>Gebaude Informationen</h1>   
+                      <core-selector selected="{{selectedBuildingInfo}}">
+                         <template repeat="{{item,i in selectedBuilding | getKeys}}" >
+                           <template if="{{selectedBuilding[item] | isNotObject}}">
                               <div>
-                                <div class="itemName">{{item | translator(item) }}</div>
-                                <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
+                                <div class="itemName">{{item | translator(item)}} </div>
+                                <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
                               </div>
                            </template>
-                           <template if="{{filteredSelectedRoom[item] | isObject}}">
-                                <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
+                           <template if="{{selectedBuilding[item] | isObject}}">
+                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
                                   <h5 style="width:100%"> {{item | translator(item) }} </h5>
                                     <section>
-                                      <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
+                                      <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
                                         <div>
-                                          <div class="itemName"> {{subitem | translator(subitem)}} </div>
-                                          <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
+                                          <div class="itemName"> {{subitem| translator(subitem)}} </div>
+                                          <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
                                         </div>
                                       </template>
                                   </section>
@@ -153,20 +113,51 @@
                         </template>
                       </core-selector>
                   </section>
-              </template>
-            </section>
-            <section id="mapData">
-              <template if="{{displayMode=='map'}}">
-                <accessibility-map> </accessibility-map>
-              </template>
-            </section>
-        </article>  
+                </template>
+
+                <template if="{{filteredSelectedRoom}}">
+                    <section id="roomInfos">
+                      <h1>Raum Informationen</h1>   
+
+                         <core-selector selected="{{selectedRoomInfo}}">
+                           <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
+                             <template if="{{filteredSelectedRoom[item] | isNotObject}}">
+                                <div>
+                                  <div class="itemName">{{item | translator(item) }}</div>
+                                  <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
+                                </div>
+                             </template>
+                             <template if="{{filteredSelectedRoom[item] | isObject}}">
+                                  <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
+                                    <h5 style="width:100%"> {{item | translator(item) }} </h5>
+                                      <section>
+                                        <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
+                                          <div>
+                                            <div class="itemName"> {{subitem | translator(subitem)}} </div>
+                                            <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
+                                          </div>
+                                        </template>
+                                    </section>
+                                  </core-collapse>
+                             </template>
+                          </template>
+                        </core-selector>
+                    </section>
+                </template>
+              </section>
+              <section id="mapData">
+                <template if="{{displayMode=='map'}}">
+                  <accessibility-map> </accessibility-map>
+                </template>
+              </section>
+          </article>  
+          </core-drawer-panel>
       </div>
    </core-header-panel>
   <!--data loaders-->
-  <core-ajax auto url="buildings.json" handleAs="json" on-core-error="{{buildingsRawResponse}}" response="{{buildingsRaw}}" sync=true></core-ajax>
-  <core-ajax auto url="roomsByBuilding.json"   handleAs="json" response="{{roomsRaw}}"   sync=true></core-ajax>
-  <core-ajax auto url="filters.json" handleAs="json" response="{{filtersRaw}}" sync=true></core-ajax>
+  <core-ajax auto url="data/buildings.json" handleAs="json" on-core-error="{{buildingsRawResponse}}" response="{{buildingsRaw}}" sync=true></core-ajax>
+  <core-ajax auto url="data/roomsByBuilding.json"   handleAs="json" response="{{roomsRaw}}"   sync=true></core-ajax>
+  <core-ajax auto url="data/filters.json" handleAs="json" response="{{filtersRaw}}" sync=true></core-ajax>
 
 </template>
 <script>
@@ -259,6 +250,12 @@
     filtersRawChanged:function(){
       console.log("filtersRawChanged");
       this.disabilityFieldMap = this.filtersRaw;
+    },
+    //internal api
+    toggleControls:function(){
+      console.log("toggling controls");
+      var controls = this.$.mainPanel;
+      controls.togglePanel();
     },
     //helpers
     updateBasedOnDisability:function(){
