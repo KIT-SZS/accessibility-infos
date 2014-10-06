@@ -8,18 +8,22 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "core-ajax": "Polymer/core-ajax#~0.4.1",
-    "i18next": "~1.7.4",
-    "paper-dropdown": "Polymer/paper-dropdown#~0.4.0",
-    "paper-radio-group": "Polymer/paper-radio-group#~0.4.0",
-    "core-header-panel": "Polymer/core-header-panel#~0.4.1",
-    "core-toolbar": "Polymer/core-toolbar#~0.4.1",
-    "paper-icon-button": "Polymer/paper-icon-button#~0.4.1",
-    "core-tooltip": "Polymer/core-tooltip#~0.4.1",
-    "core-pages": "Polymer/core-pages#~0.4.1",
-    "core-drawer-panel": "Polymer/core-drawer-panel#~0.4.1",
-    "core-a11y-keys": "Polymer/core-a11y-keys#~0.4.1",
-    "paper-dropdown-menu": "Polymer/paper-dropdown-menu#~0.4.1",
-    "core-overlay": "Polymer/core-overlay#~0.4.1"
+    "platform": "Polymer/platform#0.4.2",
+    "polymer": "Polymer/polymer#0.4.2",
+    "core-ajax": "Polymer/core-ajax#~0.4.2",
+    "core-header-panel": "Polymer/core-header-panel#~0.4.2",
+    "core-toolbar": "Polymer/core-toolbar#~0.4.2",
+    "core-tooltip": "Polymer/core-tooltip#~0.4.2",
+    "core-pages": "Polymer/core-pages#~0.4.2",
+    "core-drawer-panel": "Polymer/core-drawer-panel#~0.4.2",
+    "core-a11y-keys": "Polymer/core-a11y-keys#~0.4.2",
+    "core-overlay": "Polymer/core-overlay#~0.4.2",
+
+    "paper-dropdown": "Polymer/paper-dropdown#~0.4.2",
+    "paper-radio-group": "Polymer/paper-radio-group#~0.4.2",
+    "paper-icon-button": "Polymer/paper-icon-button#~0.4.2",
+    "paper-dropdown-menu": "Polymer/paper-dropdown-menu#~0.4.2",
+
+    "i18next": "~1.7.4"
   }
 }

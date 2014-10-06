@@ -34,14 +34,12 @@
                   </template>
               </paper-dropdown-menu>
 
-            <template if="{{selectedBuilding}}">
-                <h4>Räume</h4>
-                <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="15">
-                    <template repeat="{{room in rooms[selectedBuilding.nb]}}">
-                      <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
-                    </template>
-                </paper-dropdown-menu>
-            </template>
+              <h4>Räume</h4>
+              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="15">
+                  <template repeat="{{room in rooms[selectedBuilding.nb]}}">
+                    <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
+                  </template>
+              </paper-dropdown-menu>
           </section>
         </span>
          <span flex>
@@ -53,7 +51,7 @@
       <div class="content" fit>
         <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
 
-            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="2"> 
+            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="20"> 
               <section>
                 <h4>Sehen</h4>
                 <paper-radio-group selected="{{selectedVisualDisability}}" >
@@ -164,14 +162,15 @@
   <core-ajax auto url="data/filters.json" handleAs="json" response="{{filtersRaw}}" sync=true></core-ajax>
 
   <!--keyboard-->
-  <core-a11y-keys target="{{$.buildingSelector}}" keys="down" on-keys-pressed="{{keyTestDown}}"></core-a11y-keys>
-  <core-a11y-keys target="{{$.buildingSelector}}" keys="up" on-keys-pressed="{{keyTestUp}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.buildingSelector}}" keys="down" on-keys-pressed="{{buildingDown}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.buildingSelector}}" keys="up"   on-keys-pressed="{{buildingUp}}"></core-a11y-keys>
 
-  <core-a11y-keys target="{{$.roomSelector}}" keys="down" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
-  <core-a11y-keys target="{{$.roomSelector}}" keys="up" on-keys-pressed="{{roomUp}}"></core-a11y-keys>
-
+  <core-a11y-keys target="{{$.roomSelector}}"     keys="down" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.roomSelector}}"     keys="up"   on-keys-pressed="{{roomUp}}"></core-a11y-keys>
 
   <core-a11y-keys keys="tab up" on-keys-pressed="{{keyPressed}}"></core-a11y-keys>
+
+  <core-a11y-keys target="{{}}" keys="left right" on-keys-pressed="{{manualNavi}}"></core-a11y-keys>
 
 </template>
 <script>
@@ -206,9 +205,6 @@
 
     //ui elements helpers internal
     activeCollapsible: null,
-    focusableIndex: 6,
-    gooba:0,
-  //                <!-- tabindex="{{ plonka(selectedBuildingInfo,i, i,j+1) }}">-->
 
     created:function(){
       this.visualDisabilities= ["sehbehindert","blind","NA"];
@@ -216,7 +212,7 @@
       this.movementDisabilities=["gehbehindert","rollstullfahrer","NA"];
 
       var options = { resGetPath: 'locales/__lng__/__ns__-__lng__.json',load:['de-DE'], preload: ['de-DE'],lngWhitelist: ['de-DE'],fallbackLng:'de-DE',fallbackToDefaultNS: true  };
-      i18n.init(options, function(t) {console.log("internationalization loaded");});
+      i18n.init(options);
 
       this.disabilityFieldMap = null;
       this.buildings          = null;
@@ -225,15 +221,18 @@
     attached:function(){
       this.updateBasedOnDisability();
     },
-    domReady:function(){
-    },
-
     ready:function(){
       this.tabIndex = 0; 
       this.focus();
 
-      var self = this;
-      //this.addEventListener("keydown", function(){ console.log("key down");});
+
+      document.addEventListener('focus', function (e) {
+       console.log('Target => ', e.target);
+     });
+
+       this.addEventListener('focus', function (e) {
+       console.log('Target => ', e.target);
+     });
     },
     //attribute change handlers
     selectedVisualDisabilityChanged:function(){
@@ -253,16 +252,13 @@
       this.filteredSelectedRoom = null;
     },
     selectedBuildingChanged:function(){
-      console.log("selected building changed", this.selectedBuilding);
       this.filterBuilding();
     },
     selectedRoomIndexChanged:function(){
-      console.log("selectedRoomIndexChanged",this.selectedRoomIndex);
       var selectedBldNB = this.buildings[this.selectedBuildingIndex].nb;
       this.selectedRoom = this.rooms[selectedBldNB][this.selectedRoomIndex];
     },
     selectedRoomChanged:function(){
-      console.log("selected room changed", this.selectedRoom);
       this.filterRoom();
     },
 
@@ -303,20 +299,20 @@
       //this.$.buildingSelector.toggle();
       sender.toggle();
     },
-    keyTestDown:function(){
-        console.log("down");
+    buildingUp:function(){
+        if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
+    },
+    buildingDown:function(){
         if(this.selectedBuildingIndex == -1) {this.selectedBuildingIndex =0; return;}
         if(this.selectedBuildingIndex<this.buildings.length) this.selectedBuildingIndex += 1;
     },
-    keyTestUp:function(){
-        if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
-    },
-    roomDown:function(){
-        console.log("room down");
-        if(this.selectedRoomIndex<(this.rooms[this.selectedBuilding.nb]).length) this.selectedRoomIndex += 1;
-    },
     roomUp:function(){
         if(this.selectedRoomIndex>0 ) this.selectedRoomIndex -= 1;
+    },
+    roomDown:function(event){
+        if(!this.selectedBuilding) return;
+        if(this.selectedRoomIndex == -1) {this.selectedRoomIndex =0; return;}
+        if(this.selectedRoomIndex<(this.rooms[this.selectedBuilding.nb]).length) this.selectedRoomIndex += 1;
     },
     collapsibleFocused:function(e,detail,sender){
        console.log("collapsibleFocused");
@@ -329,9 +325,16 @@
       if (event.keyCode == 9) {
         //console.log("active", document.activeElement);
         console.log("active", document.activeElement.tabIndex );
-        
+        console.log("active", window.activeElement );
+        console.log("active", this.activeElement, event );
         // Here read the active selected link.
+        var goo = wrap(document.activeElement);
+        console.log("foo",goo);
       }
+    },
+    manualNavi:function(event){
+      console.log("manual navigation");
+
     },
     //helpers
     updateBasedOnDisability:function(){
@@ -344,17 +347,22 @@
       this.filterRoom();
     },
     filterRoom:function(){
-      console.log("this.selectedRoom", this.selectedRoom);
-      if(this.selectedRoom) this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom, "rooms" );
+      if(this.selectedRoom){
+        this.filteredSelectedRoom = this.filterByDisability( this.selectedRoom, "rooms" );
+      }else{
+        this.filteredSelectedRoom = null;
+      }
     },
     filterBuilding:function(){
-      console.log("this.selectedBuilding", this.selectedBuilding);
-      if(this.selectedBuilding) this.filteredSelectedBuilding = this.filterByDisability( this.filteredSelectedBuilding, "buildings" );
+      if(this.selectedBuilding){
+        this.filteredSelectedBuilding = this.filterByDisability( this.filteredSelectedBuilding, "buildings" );
+      }else{
+        this.filteredSelectedBuilding =  null;
+      }
     },
     filterByDisability:function( data, type ){
       if(!this.disabilityFieldMap) return data;
       var type = type || "rooms";
-      console.log("filtering");
 
       var fieldMapVisual = this.disabilityFieldMap[type];
       var fieldMapHearing = this.disabilityFieldMap[type];
@@ -416,7 +424,6 @@
               else{ propPathSub = property;} 
               if(propPathSub[0] == ".") propPathSub = propPathSub.substring(1);
               
-              console.log("propPath",propPathSub);
               if(validField(propPathSub))
               {
                 result[property] = obj[property];
