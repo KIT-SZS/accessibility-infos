@@ -19,8 +19,8 @@
 <script src="components/i18next/i18next.js"></script>
 
 
-<polymer-element name="accessibility-infos">
-<template>
+<polymer-element name="accessibility-infos" on-keydown="{{keyPressed}}" >
+<template >
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
   <core-header-panel flex mode="seamed">
       <core-toolbar>
@@ -52,11 +52,11 @@
       </core-toolbar>
       <div class="content" fit>
         <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
-            <article id="controls" drawer on-blur="{{toggleMainPanel}}"> 
+            <article id="controls" drawer on-blur="{{toggleMainPanel}}" on-focus="{{controlsFocused}}" tabindex="1"> 
               <section>
                 <h4>Sehen</h4>
                 <paper-radio-group selected="{{selectedVisualDisability}}">
-                  <template repeat="{{disability in visualDisabilities}}">
+                  <template repeat="{{disability,index in visualDisabilities}}">
                     <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
                   </template>
                 </paper-radio-group>
@@ -86,23 +86,24 @@
               </template>
               <section id="textData">
                 <template if="{{selectedBuilding && !filteredSelectedRoom}}">
-                  <section id="buildingInfos">
+                  <section id="buildingInfos" tabindex="6">
                     <h1>Gebaude Informationen</h1>   
                       <core-selector selected="{{selectedBuildingInfo}}">
                          <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                            <template if="{{selectedBuilding[item] | isNotObject}}">
-                              <div>
-                                <div class="itemName">{{item | translator(item)}} </div>
+                              <div tabindex="{{(i+1)*10}}">
+                                <div class="itemName">{{item | translator(item)}} {{getGlobalIndex(i,j)}}</div>
                                 <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
                               </div>
                            </template>
                            <template if="{{selectedBuilding[item] | isObject}}">
-                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize>
-                                  <h5 style="width:100%"> {{item | translator(item) }} </h5>
-                                    <section>
-                                      <template repeat="{{subitem in selectedBuilding[item] | getKeys}}" >
-                                        <div>
-                                          <div class="itemName"> {{subitem| translator(subitem)}} </div>
+                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{(i+1)*10+1}}" on-focus="{{collapsibleFocused}}">
+                                  <h5 style="width:100%"> {{item | translator(item) }} {{getGlobalIndex(i,j)}} </h5>
+                                  <section>
+                                      <template repeat="{{subitem,j in selectedBuilding[item] | getKeys}}" >
+                                        <div tabindex="{{((i+1)*10)+j+2}}">
+
+                                          <div class="itemName"> {{subitem| translator(subitem)}} {{getGlobalIndex(i,j)}}</div>
                                           <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
                                         </div>
                                       </template>
@@ -115,7 +116,7 @@
                 </template>
 
                 <template if="{{filteredSelectedRoom}}">
-                    <section id="roomInfos">
+                    <section id="roomInfos" tabindex="7">
                       <h1>Raum Informationen</h1>   
 
                          <core-selector selected="{{selectedRoomInfo}}">
@@ -167,8 +168,12 @@
   <core-a11y-keys target="{{$.roomSelector}}" keys="down" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
   <core-a11y-keys target="{{$.roomSelector}}" keys="up" on-keys-pressed="{{roomUp}}"></core-a11y-keys>
 
+
+  <core-a11y-keys keys="tab up" on-keys-pressed="{{keyPressed}}"></core-a11y-keys>
+
 </template>
 <script>
+  var incrementor = 10;
   Polymer("accessibility-infos", {
     buildingsRaw:null,
     roomsRaw:null,
@@ -180,7 +185,6 @@
     movementDisabilities:null,
     rooms:null,
     buildings:null,
-
 
     selectedVisualDisability:'NA',
     selectedHearingDisability:'NA',
@@ -197,6 +201,12 @@
 
     filteredSelectedBuilding:null,
     filteredSelectedRoom:null,
+
+    //ui elements helpers internal
+    activeCollapsible: null,
+    focusableIndex: 6,
+    gooba:0,
+  //                <!-- tabindex="{{ plonka(selectedBuildingInfo,i, i,j+1) }}">-->
 
     created:function(){
       this.visualDisabilities= ["sehbehindert","blind","NA"];
@@ -216,6 +226,13 @@
     domReady:function(){
     },
 
+    ready:function(){
+      this.tabIndex = 0; 
+      this.focus();
+
+      var self = this;
+      //this.addEventListener("keydown", function(){ console.log("key down");});
+    },
     //attribute change handlers
     selectedVisualDisabilityChanged:function(){
       this.updateBasedOnDisability();
@@ -259,15 +276,21 @@
       console.log("filtersRawChanged");
       this.disabilityFieldMap = this.filtersRaw;
     },
+    activeCollapsibleChanged:function(oldC,newC){
+      if(oldC) oldC.toggle();
+    },
     //event handlers
     toggleMainPanel:function(){
-      this.$.mainPanel.togglePanel();
+      console.log("toggling main panel");
+      //this.$.mainPanel.togglePanel();
+      //this.$.mainPanel.closeDrawer();
     },
     toggleControls:function(){
       console.log("toggling controls");
       var controls = this.$.mainPanel;
-      controls.togglePanel();
-      controls.focus();
+      //controls.togglePanel();
+      //controls.focus();
+      this.$.mainPanel.openDrawer();
     },
     dropMenu:function(e,detail,sender){
       console.log("keyPressDropMenu",e,detail,sender);
@@ -282,13 +305,31 @@
     keyTestUp:function(){
         if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
     },
-
     roomDown:function(){
         console.log("room down");
         if(this.selectedRoomIndex<(this.rooms[this.selectedBuilding.nb]).length) this.selectedRoomIndex += 1;
     },
     roomUp:function(){
         if(this.selectedRoomIndex>0 ) this.selectedRoomIndex -= 1;
+    },
+    controlsFocused:function(){
+      console.log("focused controls");
+    },
+
+    collapsibleFocused:function(e,detail,sender){
+       console.log("collapsibleFocused");
+       this.activeCollapsible = sender;
+       //sender.toggle();
+       sender.opened = true;
+    },
+    keyPressed:function(event){
+      console.log(" pressed");
+      if (event.keyCode == 9) {
+        console.log("tab pressed");
+        //console.log("active", document.activeElement);
+        console.log("active", this.querySelector(":focus") );
+        // Here read the active selected link.
+      }
     },
     //helpers
     updateBasedOnDisability:function(){
@@ -429,6 +470,56 @@
         res+=rKey+" : "+val+"\n";
       }
       return res;//JSON.stringify(o);
+    }
+
+    ,plonking:function(o,b){
+      console.log("plonking",o,b,this.focusableIndex);
+      incrementor +=1; 
+      return incrementor;
+    },
+
+    plonka:function(o,b, i,j){
+      console.log("plonka",o,b, o==b);
+      if(b == o) return i+j+6
+      return -1;
+    },
+
+    getGlobalIndex:function(major, minor){
+      //var minor = minor || 0;
+      var offset = 10;
+      var keys = Object.keys( this.selectedBuilding );
+
+      var item = this.selectedBuilding[ keys[major] ] ;
+      var prev = this.selectedBuilding[ keys[major-1] ] ;
+
+      //console.log("getting global index for", major, minor, item);
+      //console.log("major,minor",major,minor,item,prev);
+      //count all previous items
+      var index =0;
+     
+      for(var i=0;i<=major;i++)
+      {
+        var it = this.selectedBuilding[ keys[i] ] ;
+        index+=1;
+
+        if(this.isObject(it)){
+            
+            if(i != major)
+            {
+              index += Object.keys( it ).length ;
+            }
+            else
+            {
+              if(minor !== undefined) index+=minor;
+              if(minor >= 0 && major >=0) index += 1;
+            } 
+        }
+      }
+  
+      console.log("result",index);
+      index += offset;
+
+      return "foo"+"_"+index
     }
 
   });
