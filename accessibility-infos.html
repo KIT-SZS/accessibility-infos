@@ -24,11 +24,11 @@
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
   <core-header-panel flex mode="seamed">
       <core-toolbar>
-        <paper-icon-button  autofocus tabindex="1" icon="menu" label="filter" on-tap="{{toggleControls}}" on-keypress="{{toggleControls}}"  id="filterMenu"></paper-icon-button>
+        <paper-icon-button tabindex="1" icon="menu" label="filter" on-tap="{{toggleControls}}" on-keypress="{{toggleControls}}"  id="filterMenu"></paper-icon-button>
         <span flex>
           <section layout horrizontal>
               <h4>Gebäude</h4>
-              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="2">
+              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="10">
                   <template repeat="{{building in buildings}}">
                     <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
                   </template>
@@ -36,7 +36,7 @@
 
             <template if="{{selectedBuilding}}">
                 <h4>Räume</h4>
-                <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="3">
+                <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="15">
                     <template repeat="{{room in rooms[selectedBuilding.nb]}}">
                       <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
                     </template>
@@ -52,10 +52,11 @@
       </core-toolbar>
       <div class="content" fit>
         <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
-            <article id="controls" drawer on-blur="{{toggleMainPanel}}" on-focus="{{controlsFocused}}" tabindex="1"> 
+
+            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="2"> 
               <section>
                 <h4>Sehen</h4>
-                <paper-radio-group selected="{{selectedVisualDisability}}">
+                <paper-radio-group selected="{{selectedVisualDisability}}" >
                   <template repeat="{{disability,index in visualDisabilities}}">
                     <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
                   </template>
@@ -80,6 +81,7 @@
                 </paper-radio-group>
               </section>
             </article>
+
           <article id="data" main>
              <template if="{{!selectedBuilding && !filteredSelectedRoom}}">
                   <div id="placeHolder"> <h1>Wilkommen zu Accessibility-infos! </h1> </div>
@@ -91,19 +93,19 @@
                       <core-selector selected="{{selectedBuildingInfo}}">
                          <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                            <template if="{{selectedBuilding[item] | isNotObject}}">
-                              <div tabindex="{{(i+1)*10}}">
-                                <div class="itemName">{{item | translator(item)}} {{getGlobalIndex(i,j)}}</div>
+                              <div tabindex="{{getGlobalIndex(i,j,16)}}">
+                                <div class="itemName">{{item | translator(item)}}</div>
                                 <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
                               </div>
                            </template>
                            <template if="{{selectedBuilding[item] | isObject}}">
-                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{(i+1)*10+1}}" on-focus="{{collapsibleFocused}}">
-                                  <h5 style="width:100%"> {{item | translator(item) }} {{getGlobalIndex(i,j)}} </h5>
+                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,16)}}" on-focus="{{collapsibleFocused}}">
+                                  <h5 style="width:100%"> {{item | translator(item) }} </h5>
                                   <section>
                                       <template repeat="{{subitem,j in selectedBuilding[item] | getKeys}}" >
-                                        <div tabindex="{{((i+1)*10)+j+2}}">
+                                        <div tabindex="{{getGlobalIndex(i,j,16)}}">
 
-                                          <div class="itemName"> {{subitem| translator(subitem)}} {{getGlobalIndex(i,j)}}</div>
+                                          <div class="itemName"> {{subitem| translator(subitem)}}</div>
                                           <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
                                         </div>
                                       </template>
@@ -280,8 +282,12 @@
       if(oldC) oldC.toggle();
     },
     //event handlers
-    toggleMainPanel:function(){
-      console.log("toggling main panel");
+    controlsFocused:function(){
+      console.log("focused controls");
+      this.$.mainPanel.togglePanel();//.openDrawer();
+    },
+    controlsBlurred:function(){
+      console.log("bluring controls");
       //this.$.mainPanel.togglePanel();
       //this.$.mainPanel.closeDrawer();
     },
@@ -312,10 +318,6 @@
     roomUp:function(){
         if(this.selectedRoomIndex>0 ) this.selectedRoomIndex -= 1;
     },
-    controlsFocused:function(){
-      console.log("focused controls");
-    },
-
     collapsibleFocused:function(e,detail,sender){
        console.log("collapsibleFocused");
        this.activeCollapsible = sender;
@@ -323,11 +325,11 @@
        sender.opened = true;
     },
     keyPressed:function(event){
-      console.log(" pressed");
+      //console.log(" pressed");
       if (event.keyCode == 9) {
-        console.log("tab pressed");
         //console.log("active", document.activeElement);
-        console.log("active", this.querySelector(":focus") );
+        console.log("active", document.activeElement.tabIndex );
+        
         // Here read the active selected link.
       }
     },
@@ -455,7 +457,6 @@
       var i18nKey = 'app.generic.'+key;
       var translation = i18n.t('app.generic.'+key);
       if(translation == i18nKey) translation = o;
-      //console.log("translating",o,key,"to",translation);
       return translation;
     },
     cleanSub:function(o)
@@ -467,7 +468,7 @@
         var val = o[key];
         var rKey = this.translator(key,key);
         val = this.toGermanBoolean(val);
-        res+=rKey+" : "+val+"\n";
+        res+=", "+rKey+" : "+val+"\n";
       }
       return res;//JSON.stringify(o);
     }
@@ -484,17 +485,14 @@
       return -1;
     },
 
-    getGlobalIndex:function(major, minor){
-      //var minor = minor || 0;
-      var offset = 10;
+    getGlobalIndex:function(major, minor, offset){
+      var offset = offset || 0;
       var keys = Object.keys( this.selectedBuilding );
 
       var item = this.selectedBuilding[ keys[major] ] ;
       var prev = this.selectedBuilding[ keys[major-1] ] ;
 
-      //console.log("getting global index for", major, minor, item);
-      //console.log("major,minor",major,minor,item,prev);
-      //count all previous items
+      //offset based on all previous items
       var index =0;
      
       for(var i=0;i<=major;i++)
@@ -515,11 +513,9 @@
             } 
         }
       }
-  
-      console.log("result",index);
       index += offset;
 
-      return "foo"+"_"+index
+      return index;
     }
 
   });
