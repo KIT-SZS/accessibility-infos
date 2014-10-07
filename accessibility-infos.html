@@ -14,7 +14,8 @@
 <link rel="import" href="components/core-pages/core-pages.html">
 <link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
 
-<link rel="import" href="accessibility-map.html">
+<!-- MAP is commented out for now, not really used
+<link rel="import" href="accessibility-map.html">-->
 
 <script src="components/i18next/i18next.js"></script>
 
@@ -94,20 +95,20 @@
                       <core-selector selected="{{selectedBuildingInfo}}">
                          <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                            <template if="{{selectedBuilding[item] | isNotObject}}">
-                              <div tabindex="{{getGlobalIndex(i,j,6)}}">
+                              <section tabindex="{{getGlobalIndex(i,j,6)}}">
                                 <div class="itemName">{{item | translator(item)}}</div>
                                 <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
-                              </div>
+                              </section>
                            </template>
                            <template if="{{selectedBuilding[item] | isObject}}">
                                 <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,6)}}" on-focus="{{collapsibleFocused}}">
-                                  <h5 style="width:100%"> {{item | translator(item) }} </h5>
+                                  <header> <h2>{{item | translator(item) }} </h2></header>
                                   <section>
                                       <template repeat="{{subitem,j in selectedBuilding[item] | getKeys}}" >
-                                        <div tabindex="{{getGlobalIndex(i,j,6)}}">
+                                        <section tabindex="{{getGlobalIndex(i,j,6)}}">
                                           <div class="itemName"> {{subitem| translator(subitem)}}</div>
                                           <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
-                                        </div>
+                                        </section>
                                       </template>
                                   </section>
                                 </core-collapse>
@@ -124,20 +125,20 @@
                          <core-selector selected="{{selectedRoomInfo}}">
                            <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
                              <template if="{{filteredSelectedRoom[item] | isNotObject}}">
-                                <div tabindex="{{getGlobalIndex(i,j,8)}}">
+                                <section tabindex="{{getGlobalIndex(i,j,8)}}">
                                   <div class="itemName">{{item | translator(item) }}</div>
                                   <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
-                                </div>
+                                </section>
                              </template>
                              <template if="{{filteredSelectedRoom[item] | isObject}}">
                                   <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,8)}}" on-focus="{{collapsibleFocused}}">
-                                    <h5 style="width:100%"> {{item | translator(item) }} </h5>
+                                    <header> <h2>{{item | translator(item) }} </h2></header>
                                       <section>
                                         <template repeat="{{subitem,j in filteredSelectedRoom[item] | getKeys}}" >
-                                          <div tabindex="{{getGlobalIndex(i,j,8)}}"> 
+                                          <section tabindex="{{getGlobalIndex(i,j,8)}}"> 
                                             <div class="itemName"> {{subitem | translator(subitem)}} </div>
                                             <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
-                                          </div>
+                                          </section>
                                         </template>
                                     </section>
                                   </core-collapse>
@@ -147,13 +148,15 @@
                     </section>
                 </template>
               </section>
+              <!--MAP removed for now
+
               <section id="mapData">
                 <template if="{{selectedBuilding && !filteredSelectedRoom}}">
                   <template if="{{displayMode=='map'}}">
                     <accessibility-map> </accessibility-map>
                   </template>
                 </template>
-              </section>
+              </section>-->
           </article>  
           </core-drawer-panel>
       </div>
@@ -292,27 +295,18 @@
     },
     toggleControls:function(){
       console.log("toggling controls");
-      //var controls = this.$.mainPanel;
-      //this.$.mainPanel.togglePanel();//.openDrawer();
       this.$.mainPanel.openDrawer();   
-      //this.$.controls.focus();
-
       this.async(function(){
-
         var bar = this.$.controls.querySelector('#bar');
-        bar.focus();
-        //this.shadowRoot.activeElement = this.$.bar;
-      //this.$.controls.focus();
-        //this.$.bar.focus();
-        //console.log("focusing");
-      },null,150);
+        if(bar) bar.focus();
+      },null,0);
       
     },
     dropMenu:function(e,detail,sender){
       console.log("keyPressDropMenu",e,detail,sender);
       //this.$.buildingSelector.toggle();
-      sender.toggle();
-      sender.focus();
+      //sender.toggle();
+      //sender.focus();
     },
     buildingUp:function(){
         if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
@@ -490,14 +484,15 @@
     cleanSub:function(o)
     {
       if(!this.isObject(o)) return o;
-      var res="";
+      var res=[];
       for(var key in o)
       {
         var val = o[key];
         var rKey = this.translator(key,key);
         val = this.toGermanBoolean(val);
-        res+=", "+rKey+" : "+val+"\n";
+        res.push(rKey+" : "+val);
       }
+      res = res.join(", ") +"\n";
       return res;//JSON.stringify(o);
     }
 

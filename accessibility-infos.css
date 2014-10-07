@@ -1,22 +1,9 @@
 
 
-/*
-#controls{
-  position:absolute;
-  width:20%;height:100%;
-  left:0px;
-  border:1px solid black;
-  padding:5px;
-}*/
-
 #controls{
   background:white;
 }
 
-#controls:focus{
-  outline: -webkit-focus-ring-color auto 5px;
-  color:red;
-}
 
 #placeHolder{
   text-align: center;
@@ -34,31 +21,20 @@
 }
 
 :focus {
-outline: -webkit-focus-ring-color auto 5px;
+  outline: 2px auto blue;
+  color:red;
 }
 
 
-/*for map ---------------*/
-
-accessibility-map {
-
-width: 640px;
-height: 480px;
-position: absolute;
-z-index: 10;
+section:focus >div{
+  color:red;
 }
 
-core-collapse {
-margin: 10px 0;
-background: rgb(248, 248, 248);
-        padding: 15px;
-        display: block !important;
-        min-height: 15px;
+
+section > h4{
+  padding-right: 10px;
 }
 
-core-header-panel {
-  height: 100%;
-}
 
 h1{
   width: 100%;
@@ -66,27 +42,21 @@ h1{
   margin-top: 0px;
 }
 
-h5{
+h2{
+  font-size: 15px;
+  margin-top: 0px;
+}
+
+header{
   width: 100%;
   font-size: 15px;
   margin-top: 0px;
 }
 
 #textData{
-  width: 60%;
-  position: absolute;
-  top: 0;
-  left: 0;
   padding:10px;
 }
 
-#mapData{
-  width: 40%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 60%;
-}
 
 .content{
   overflow:hidden;
@@ -106,16 +76,44 @@ h5{
   width: 400px;
 }
 
+
+/*for map ---------------*/
+#mapData{
+  width: 40%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 60%;
+}
+accessibility-map {
+
+width: 640px;
+height: 480px;
+position: absolute;
+z-index: 10;
+}
+
+
+/*POLYMER element stylings*/
+core-collapse {
+margin: 10px 0;
+background: rgb(248, 248, 248);
+        padding: 15px;
+        display: block !important;
+        min-height: 15px;
+}
+
+core-header-panel {
+  height: 100%;
+}
+
+
 core-toolbar section{
   display: inline-flex;
   color:blue;
 }
 
-section > h4{
-  padding-right: 10px;
-}
 
-/*POLYMER element stylings*/
 core-toolbar{
   padding-bottom: 50px;
 }
@@ -137,6 +135,12 @@ core-toolbar {
   background: #fff;
 }
 
+
+paper-dropdown-menu:focus /deep/ #control > div {
+    color: red;
+}
+
+
 core-toolbar /deep/ core-icon {
     width: 24px;
     height: 24px;
@@ -151,7 +155,6 @@ core-pages{
 [drawer] {
     background-color: white;
     border-right: 1px solid #ccc;
-    width:300px;
   }
 
 [drawer]:focus {
