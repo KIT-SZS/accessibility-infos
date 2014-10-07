@@ -19,7 +19,7 @@
 <script src="components/i18next/i18next.js"></script>
 
 
-<polymer-element name="accessibility-infos" on-keydown="{{keyPressed}}" >
+<polymer-element name="accessibility-infos" on-keydown="{{keyPressed}}" on-blur="{{blured}}" on-focus="{{focused}}">
 <template >
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
   <core-header-panel flex mode="seamed">
@@ -28,14 +28,14 @@
         <span flex>
           <section layout horrizontal>
               <h4>Gebäude</h4>
-              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="10">
+              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="2">
                   <template repeat="{{building in buildings}}">
                     <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
 
               <h4>Räume</h4>
-              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="15">
+              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="3">
                   <template repeat="{{room in rooms[selectedBuilding.nb]}}">
                     <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
                   </template>
@@ -51,34 +51,37 @@
       <div class="content" fit>
         <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
 
-            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="20"> 
-              <section>
-                <h4>Sehen</h4>
-                <paper-radio-group selected="{{selectedVisualDisability}}" >
-                  <template repeat="{{disability,index in visualDisabilities}}">
-                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </section>
+            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="-1"> 
 
-              <section>
-                <h4>Hören</h4>
-                <paper-radio-group selected="{{selectedHearingDisability}}">
-                  <template repeat="{{disability in hearingDisabilities}}">
-                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </section>
+              <template if="{{ $.mainPanel.selected=='drawer' }}" >
+                <section id="bar" tabindex="-1">
+                  <h4>Sehen</h4>
+                  <paper-radio-group selected="{{selectedVisualDisability}}" >
+                    <template repeat="{{disability,index in visualDisabilities}}">
+                      <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
+                    </template>
+                  </paper-radio-group>
+                </section>
 
-              <section>
-                <h4>Gehen</h4>
-                <paper-radio-group selected="{{selectedMovementDisability}}">
-                  <template repeat="{{disability in movementDisabilities}}">
-                    <paper-radio-button name="{{disability}}" label="{{disability}}"></paper-radio-button>
-                  </template>
-                </paper-radio-group>
-              </section>
-            </article>
+                <section>
+                  <h4>Hören</h4>
+                  <paper-radio-group selected="{{selectedHearingDisability}}" >
+                    <template repeat="{{disability in hearingDisabilities}}">
+                      <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
+                    </template>
+                  </paper-radio-group>
+                </section>
+
+                <section>
+                  <h4>Gehen</h4>
+                  <paper-radio-group selected="{{selectedMovementDisability}}" >
+                    <template repeat="{{disability in movementDisabilities}}">
+                      <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
+                    </template>
+                  </paper-radio-group>
+                </section>
+              </template>
+          </article>
 
           <article id="data" main>
              <template if="{{!selectedBuilding && !filteredSelectedRoom}}">
@@ -86,23 +89,22 @@
               </template>
               <section id="textData">
                 <template if="{{selectedBuilding && !filteredSelectedRoom}}">
-                  <section id="buildingInfos" tabindex="6">
+                  <section id="buildingInfos" tabindex="5">
                     <h1>Gebaude Informationen</h1>   
                       <core-selector selected="{{selectedBuildingInfo}}">
                          <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                            <template if="{{selectedBuilding[item] | isNotObject}}">
-                              <div tabindex="{{getGlobalIndex(i,j,16)}}">
+                              <div tabindex="{{getGlobalIndex(i,j,6)}}">
                                 <div class="itemName">{{item | translator(item)}}</div>
                                 <div class="itemText">{{selectedBuilding[item] | toGermanBoolean }}</div>
                               </div>
                            </template>
                            <template if="{{selectedBuilding[item] | isObject}}">
-                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,16)}}" on-focus="{{collapsibleFocused}}">
+                                <core-collapse opened?="{{selectedBuildingInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,6)}}" on-focus="{{collapsibleFocused}}">
                                   <h5 style="width:100%"> {{item | translator(item) }} </h5>
                                   <section>
                                       <template repeat="{{subitem,j in selectedBuilding[item] | getKeys}}" >
-                                        <div tabindex="{{getGlobalIndex(i,j,16)}}">
-
+                                        <div tabindex="{{getGlobalIndex(i,j,6)}}">
                                           <div class="itemName"> {{subitem| translator(subitem)}}</div>
                                           <div class="itemText"> {{selectedBuilding[item][subitem] | cleanSub | toGermanBoolean }} </div>
                                         </div>
@@ -122,17 +124,17 @@
                          <core-selector selected="{{selectedRoomInfo}}">
                            <template repeat="{{item, i in filteredSelectedRoom | getKeys}}" >
                              <template if="{{filteredSelectedRoom[item] | isNotObject}}">
-                                <div>
+                                <div tabindex="{{getGlobalIndex(i,j,8)}}">
                                   <div class="itemName">{{item | translator(item) }}</div>
                                   <div class="itemText">{{filteredSelectedRoom[item] | toGermanBoolean }}</div>
                                 </div>
                              </template>
                              <template if="{{filteredSelectedRoom[item] | isObject}}">
-                                  <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize>
+                                  <core-collapse opened?="{{selectedRoomInfo == i}}" fixedSize tabindex="{{getGlobalIndex(i,j,8)}}" on-focus="{{collapsibleFocused}}">
                                     <h5 style="width:100%"> {{item | translator(item) }} </h5>
                                       <section>
-                                        <template repeat="{{subitem in filteredSelectedRoom[item] | getKeys}}" >
-                                          <div>
+                                        <template repeat="{{subitem,j in filteredSelectedRoom[item] | getKeys}}" >
+                                          <div tabindex="{{getGlobalIndex(i,j,8)}}"> 
                                             <div class="itemName"> {{subitem | translator(subitem)}} </div>
                                             <div class="itemText"> {{filteredSelectedRoom[item][subitem] | toGermanBoolean  }} </div>
                                           </div>
@@ -156,6 +158,7 @@
           </core-drawer-panel>
       </div>
    </core-header-panel>
+
   <!--data loaders-->
   <core-ajax auto url="data/buildings.json" handleAs="json" on-core-error="{{buildingsRawResponse}}" response="{{buildingsRaw}}" sync=true></core-ajax>
   <core-ajax auto url="data/roomsByBuilding.json"   handleAs="json" response="{{roomsRaw}}"   sync=true></core-ajax>
@@ -167,6 +170,10 @@
 
   <core-a11y-keys target="{{$.roomSelector}}"     keys="down" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
   <core-a11y-keys target="{{$.roomSelector}}"     keys="up"   on-keys-pressed="{{roomUp}}"></core-a11y-keys>
+
+  <core-a11y-keys target="{{$.filterMenu}}"       keys="down" on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.filterMenu}}"       keys="up"   on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
+
 
   <core-a11y-keys keys="tab up" on-keys-pressed="{{keyPressed}}"></core-a11y-keys>
 
@@ -222,17 +229,8 @@
       this.updateBasedOnDisability();
     },
     ready:function(){
-      this.tabIndex = 0; 
-      this.focus();
-
-
-      document.addEventListener('focus', function (e) {
-       console.log('Target => ', e.target);
-     });
-
-       this.addEventListener('focus', function (e) {
-       console.log('Target => ', e.target);
-     });
+      //this.tabIndex = 0; 
+      //this.focus();
     },
     //attribute change handlers
     selectedVisualDisabilityChanged:function(){
@@ -256,31 +254,36 @@
     },
     selectedRoomIndexChanged:function(){
       var selectedBldNB = this.buildings[this.selectedBuildingIndex].nb;
-      this.selectedRoom = this.rooms[selectedBldNB][this.selectedRoomIndex];
+      if( selectedBldNB == null || selectedBldNB === undefined || selectedBldNB == -1) return;
+      var selectedBuilding = this.rooms[selectedBldNB];
+      if(!selectedBuilding) return;
+      this.selectedRoom = selectedBuilding[this.selectedRoomIndex];
     },
     selectedRoomChanged:function(){
       this.filterRoom();
     },
 
     buildingsRawChanged:function(){
-      console.log("buildingsRawChanged");
       this.buildings = this.buildingsRaw;
     },
     roomsRawChanged:function(){
-      console.log("roomsRawChanged");
       this.rooms = this.roomsRaw;
     },
     filtersRawChanged:function(){
-      console.log("filtersRawChanged");
       this.disabilityFieldMap = this.filtersRaw;
     },
     activeCollapsibleChanged:function(oldC,newC){
       if(oldC) oldC.toggle();
     },
     //event handlers
+    focused:function(){
+    },
+    blured:function(){
+      this.$.mainPanel.closeDrawer();   
+    },
     controlsFocused:function(){
       console.log("focused controls");
-      this.$.mainPanel.togglePanel();//.openDrawer();
+      //this.$.mainPanel.togglePanel();//.openDrawer();
     },
     controlsBlurred:function(){
       console.log("bluring controls");
@@ -289,15 +292,27 @@
     },
     toggleControls:function(){
       console.log("toggling controls");
-      var controls = this.$.mainPanel;
-      //controls.togglePanel();
-      //controls.focus();
-      this.$.mainPanel.openDrawer();
+      //var controls = this.$.mainPanel;
+      //this.$.mainPanel.togglePanel();//.openDrawer();
+      this.$.mainPanel.openDrawer();   
+      //this.$.controls.focus();
+
+      this.async(function(){
+
+        var bar = this.$.controls.querySelector('#bar');
+        bar.focus();
+        //this.shadowRoot.activeElement = this.$.bar;
+      //this.$.controls.focus();
+        //this.$.bar.focus();
+        //console.log("focusing");
+      },null,150);
+      
     },
     dropMenu:function(e,detail,sender){
       console.log("keyPressDropMenu",e,detail,sender);
       //this.$.buildingSelector.toggle();
       sender.toggle();
+      sender.focus();
     },
     buildingUp:function(){
         if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
@@ -312,7 +327,9 @@
     roomDown:function(event){
         if(!this.selectedBuilding) return;
         if(this.selectedRoomIndex == -1) {this.selectedRoomIndex =0; return;}
-        if(this.selectedRoomIndex<(this.rooms[this.selectedBuilding.nb]).length) this.selectedRoomIndex += 1;
+        var roomsInBld = this.rooms[this.selectedBuilding.nb];
+        if(!roomsInBld) return;
+        if(this.selectedRoomIndex<roomsInBld.length) this.selectedRoomIndex += 1;
     },
     collapsibleFocused:function(e,detail,sender){
        console.log("collapsibleFocused");
@@ -324,12 +341,16 @@
       //console.log(" pressed");
       if (event.keyCode == 9) {
         //console.log("active", document.activeElement);
-        console.log("active", document.activeElement.tabIndex );
+        /*console.log("active", document.activeElement.tabIndex );
         console.log("active", window.activeElement );
         console.log("active", this.activeElement, event );
         // Here read the active selected link.
         var goo = wrap(document.activeElement);
-        console.log("foo",goo);
+        console.log("foo",goo,goo.hashCode);*/
+        
+        var tabIndex = -1;
+        if(this.shadowRoot.activeElement) tabIndex = this.shadowRoot.activeElement.tabIndex;
+        //console.log("active",this.shadowRoot.activeElement,tabIndex);
       }
     },
     manualNavi:function(event){
@@ -523,7 +544,18 @@
       index += offset;
 
       return index;
-    }
+    },
+    tabIndexSubMenu:function(){
+      //{'-1': $.mainPanel.selected=='main', '0':$.mainPanel.selected!='main'} | tokenList
+      console.log("foo");
+      if(!this.$) return -1;
+      if(this.$.mainPanel.selected == 'main')
+      {
+        return -1;
+      }
+      return 0;
+    }    
+
 
   });
 </script>
