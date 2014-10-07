@@ -2,6 +2,9 @@
     "app": {
       "name": "accessibility-infos",
       "generic":{
+        "Buildings":"Gebäude",
+        "Rooms":"Räume",
+
         "nb":"Nummer",
         "name":"Name",
         "adress":"Adresse",
@@ -57,6 +60,7 @@
         "permaChairs":"Feste Bestuhlung",
         "typeOfDesks":"Art der Tische",
         "wheelChairDesk":"unterfahrbare Tische",
+        "wheelChairPlace":"Platz für Rollstuhl",
         "normalTablesAndChairs":"normale Tische/Stühle",
         "extraTablesPossible":"Möglichkeit extra Tisch einzurichten",
 

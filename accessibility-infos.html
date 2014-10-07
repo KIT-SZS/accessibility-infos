@@ -28,22 +28,22 @@
         <paper-icon-button tabindex="1" icon="menu" label="filter" on-tap="{{toggleControls}}" on-keypress="{{toggleControls}}"  id="filterMenu"></paper-icon-button>
         <span flex>
           <section layout horrizontal>
-              <h4>Gebäude</h4>
-              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="2">
+              <h1>Gebäude</h1>
+              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="2" label="Gebäude auswählen">
                   <template repeat="{{building in buildings}}">
                     <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
 
-              <h4>Räume</h4>
-              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="3">
-                  <template repeat="{{room in rooms[selectedBuilding.nb]}}">
+              <h1>Räume</h1>
+              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="3" label="Raum auswählen">
+                  <template repeat="{{room in rooms[selectedBuilding.nb]}}" >
                     <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
           </section>
         </span>
-         <span flex>
+         <span >
            <section tabindex="4">
             Notruf: 0721-608-43333
           </section>
@@ -56,7 +56,7 @@
 
               <template if="{{ $.mainPanel.selected=='drawer' }}" >
                 <section id="bar" tabindex="-1">
-                  <h4>Sehen</h4>
+                  <h2>Sehen</h2>
                   <paper-radio-group selected="{{selectedVisualDisability}}" >
                     <template repeat="{{disability,index in visualDisabilities}}">
                       <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
@@ -65,7 +65,7 @@
                 </section>
 
                 <section>
-                  <h4>Hören</h4>
+                  <h2>Hören</h2>
                   <paper-radio-group selected="{{selectedHearingDisability}}" >
                     <template repeat="{{disability in hearingDisabilities}}">
                       <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
@@ -74,7 +74,7 @@
                 </section>
 
                 <section>
-                  <h4>Gehen</h4>
+                  <h2>Gehen</h2>
                   <paper-radio-group selected="{{selectedMovementDisability}}" >
                     <template repeat="{{disability in movementDisabilities}}">
                       <paper-radio-button name="{{disability}}" label="{{disability}}" ></paper-radio-button>
@@ -168,14 +168,14 @@
   <core-ajax auto url="data/filters.json" handleAs="json" response="{{filtersRaw}}" sync=true></core-ajax>
 
   <!--keyboard-->
-  <core-a11y-keys target="{{$.buildingSelector}}" keys="down" on-keys-pressed="{{buildingDown}}"></core-a11y-keys>
-  <core-a11y-keys target="{{$.buildingSelector}}" keys="up"   on-keys-pressed="{{buildingUp}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.buildingSelector}}" keys="alt+down down space " on-keys-pressed="{{buildingDown}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.buildingSelector}}" keys="alt+up up"   on-keys-pressed="{{buildingUp}}"></core-a11y-keys>
 
-  <core-a11y-keys target="{{$.roomSelector}}"     keys="down" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
-  <core-a11y-keys target="{{$.roomSelector}}"     keys="up"   on-keys-pressed="{{roomUp}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.roomSelector}}"     keys="alt+down down space" on-keys-pressed="{{roomDown}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.roomSelector}}"     keys="alt+up"   on-keys-pressed="{{roomUp}}"></core-a11y-keys>
 
-  <core-a11y-keys target="{{$.filterMenu}}"       keys="down" on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
-  <core-a11y-keys target="{{$.filterMenu}}"       keys="up"   on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.filterMenu}}"       keys="alt+down down space" on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
+  <core-a11y-keys target="{{$.filterMenu}}"       keys="alt+up up"   on-keys-pressed="{{toggleControls}}"></core-a11y-keys>
 
 
   <core-a11y-keys keys="tab up" on-keys-pressed="{{keyPressed}}"></core-a11y-keys>
@@ -184,7 +184,6 @@
 
 </template>
 <script>
-  var incrementor = 10;
   Polymer("accessibility-infos", {
     buildingsRaw:null,
     roomsRaw:null,
@@ -476,6 +475,12 @@
     },
     //FIXME: for whatever reason renaming this method to "translate"does not work ?
     translator: function(o, key){
+      //console.log("translate",o,key)
+      if(!key){
+        var foo = i18n.t('app.generic.'+o);
+        //console.log("foo",foo);
+        return foo;
+      }
       var i18nKey = 'app.generic.'+key;
       var translation = i18n.t('app.generic.'+key);
       if(translation == i18nKey) translation = o;
@@ -494,18 +499,6 @@
       }
       res = res.join(", ") +"\n";
       return res;//JSON.stringify(o);
-    }
-
-    ,plonking:function(o,b){
-      console.log("plonking",o,b,this.focusableIndex);
-      incrementor +=1; 
-      return incrementor;
-    },
-
-    plonka:function(o,b, i,j){
-      console.log("plonka",o,b, o==b);
-      if(b == o) return i+j+6
-      return -1;
     },
 
     getGlobalIndex:function(major, minor, offset){
