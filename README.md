@@ -69,8 +69,11 @@ Short version of updating json data & publishint it:
           node publish.js
 
 
-Using the software:
-===================
+If you are a developper, follow the guidelines in the next section
+
+
+Developping/using the scripts etc:
+==================================
 
 
 
@@ -102,7 +105,7 @@ Using the software:
       just copy them to the **data** folder
     
   
-  Developping the user interface
+  Developping the user interface 
   ==============================
 
     - use any web server to serve the files at the root directory
@@ -116,8 +119,8 @@ of this repo
 
 
 
-  Building a concatenated version of the ui (client side)
-  =======================================================
+  Building a concatenated version of the user interface + its components
+  ======================================================================
 
 
 
@@ -139,7 +142,7 @@ of this repo
       - then run
 
 
-              vulcanize --inline index.html
+              vulcanize --inline --output infos.html index.html 
 
 
     Publish to github pages:

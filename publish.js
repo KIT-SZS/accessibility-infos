@@ -15,7 +15,7 @@ fs.renameSync("roomsByBuilding.json", "data/roomsByBuilding.json");
 fs.renameSync("buildings.json"      , "data/buildings.json");
 
 //vulcanize custom element, just in case
-var vulcanize = execSync("vulcanize --inline index.html");
+var vulcanize = execSync("vulcanize --inline --output infos.html index.html");
 console.log("vulcanizing:\n",vulcanize);
 
 //do some git magic
