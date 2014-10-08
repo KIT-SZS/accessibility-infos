@@ -19,7 +19,7 @@ var vulcanize = execSync("vulcanize --inline --output infos.html index.html");
 console.log("vulcanizing:\n",vulcanize);
 
 //do some git magic
-var addGit = execSync("git add data locales vulcanized.html accessibility-infos.html accessibility-infos.css index.html");
+var addGit = execSync("git add data locales infos.html accessibility-infos.html accessibility-infos.css index.html");
 var commitGit = execSync("git commit -m '- autoUpdated data/repository on "+new Date() +"'");
 var publishGitMaster = execSync("git push origin master");
 var publishGitPages  = execSync("git push -f origin master:gh-pages");
