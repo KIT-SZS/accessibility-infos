@@ -90,7 +90,7 @@
               <section id="textData">
                 <template if="{{selectedBuilding && !filteredSelectedRoom}}">
                   <section id="buildingInfos" tabindex="5">
-                    <h1>Gebaude-Informationen</h1>   
+                    <h1>Gebäude-Informationen</h1>   
                       <core-selector selected="{{selectedBuildingInfo}}">
                          <template repeat="{{item,i in selectedBuilding | getKeys}}" >
                            <template if="{{selectedBuilding[item] | isNotObject}}">
