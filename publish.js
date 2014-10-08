@@ -1,6 +1,6 @@
 var sys = require('sys')
 var exec = require('child_process').exec;
-var execSync = require('exec-sync');
+var execSync = require('execSync').run;
 var fs = require('fs');
 
 
@@ -19,8 +19,10 @@ var vulcanize = execSync("vulcanize --inline index.html");
 console.log("vulcanizing:\n",vulcanize);
 
 //do some git magic
-var publishGit = execSync("git push -f origin master:gh-pages");
-console.log("Publishing to github:\n",publishGit);
+var publishGitMaster = execSync("git push origin master");
+var publishGitPages  = execSync("git push -f origin master:gh-pages");
+var publishOk = publishGitMaster && publishGitPages;
+console.log("Publishing to github:\n",publishOk);
 
 /*var gitCheckoutGhPages = execSync("git checkout gh-pages");
 console.log("Checking out gh-pages branch:\n",gitCheckoutGhPages);
