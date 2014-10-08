@@ -26,14 +26,3 @@ var publishGitPages  = execSync("git push -f origin master:gh-pages");
 var publishOk = addGit && commitGit && publishGitMaster && publishGitPages;
 console.log("Publishing to github:\n",publishOk);
 
-/*var gitCheckoutGhPages = execSync("git checkout gh-pages");
-console.log("Checking out gh-pages branch:\n",gitCheckoutGhPages);
-
-var gitRebaseFromMaster = execSync("git rebase master");
-console.log("Rebase from master:\n",gitRebaseFromMaster);
-
-var gitPushToGhPages = execSync("git push origin gh-pages");
-console.log("Pushing pages:\n",gitPushToGhPages);
-
-var gitCheckoutMaster = execSync("git checkout master");
-console.log("Returning to master branch:\n",gitCheckoutMaster);*/
