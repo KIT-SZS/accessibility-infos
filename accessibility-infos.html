@@ -25,18 +25,18 @@
   <link href="./accessibility-infos.css" rel="stylesheet" ></link>
   <core-header-panel flex mode="seamed">
       <core-toolbar>
-        <paper-icon-button tabindex="1" icon="menu" label="filter" on-tap="{{toggleControls}}" on-keypress="{{toggleControls}}"  id="filterMenu"></paper-icon-button>
+        <paper-icon-button tabindex="1" icon="menu" label="filter" on-tap="{{toggleControls}}"  id="filterMenu"></paper-icon-button>
         <span flex>
           <section layout horrizontal>
               <h1>Gebäude</h1>
-              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" on-keypress="{{dropMenu}}" tabindex="2" label="Gebäude auswählen">
+              <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" tabindex="2" label="Gebäude auswählen">
                   <template repeat="{{building in buildings}}">
                     <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
 
               <h1>Räume</h1>
-              <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" on-keypress="{{dropMenu}}" tabindex="3" label="Raum auswählen">
+              <paper-dropdown-menu selected="{{selectedRoomIndex}}"     id="roomSelector"     tabindex="3" label="Raum auswählen">
                   <template repeat="{{room in rooms[selectedBuilding.nb]}}" >
                     <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
                   </template>
@@ -52,10 +52,9 @@
       <div class="content" fit>
         <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
 
-            <article id="controls" drawer on-blur="{{controlsBlurred}}" on-focus="{{controlsFocused}}" tabindex="-1"> 
-
+            <article id="controls" drawer> 
               <template if="{{ $.mainPanel.selected=='drawer' }}" >
-                <section id="bar" tabindex="-1">
+                <section id="firstControlFocusPoint" tabindex="0">
                   <h2>Sehen</h2>
                   <paper-radio-group selected="{{selectedVisualDisability}}" >
                     <template repeat="{{disability,index in visualDisabilities}}">
@@ -283,30 +282,17 @@
     blured:function(){
       this.$.mainPanel.closeDrawer();   
     },
-    controlsFocused:function(){
-      console.log("focused controls");
-      //this.$.mainPanel.togglePanel();//.openDrawer();
-    },
-    controlsBlurred:function(){
-      console.log("bluring controls");
-      //this.$.mainPanel.togglePanel();
-      //this.$.mainPanel.closeDrawer();
-    },
     toggleControls:function(){
-      console.log("toggling controls");
-      this.$.mainPanel.openDrawer();   
+      this.$.mainPanel.togglePanel();
+      //var firstItem = this.shadowRoot.querySelector('#firstControlFocusPoint');
+      //if(firstItem) firstItem.focus();
       this.async(function(){
-        var bar = this.$.controls.querySelector('#bar');
-        if(bar) bar.focus();
+        var firstItem = this.$.controls.querySelector('#firstControlFocusPoint');
+        if(firstItem) firstItem.focus();
       },null,0);
       
     },
-    dropMenu:function(e,detail,sender){
-      console.log("keyPressDropMenu",e,detail,sender);
-      //this.$.buildingSelector.toggle();
-      //sender.toggle();
-      //sender.focus();
-    },
+    
     buildingUp:function(){
         if(this.selectedBuildingIndex>0 ) this.selectedBuildingIndex -= 1;
     },
@@ -325,9 +311,7 @@
         if(this.selectedRoomIndex<roomsInBld.length) this.selectedRoomIndex += 1;
     },
     collapsibleFocused:function(e,detail,sender){
-       console.log("collapsibleFocused");
        this.activeCollapsible = sender;
-       //sender.toggle();
        sender.opened = true;
     },
     keyPressed:function(event){
@@ -533,18 +517,6 @@
 
       return index;
     },
-    tabIndexSubMenu:function(){
-      //{'-1': $.mainPanel.selected=='main', '0':$.mainPanel.selected!='main'} | tokenList
-      console.log("foo");
-      if(!this.$) return -1;
-      if(this.$.mainPanel.selected == 'main')
-      {
-        return -1;
-      }
-      return 0;
-    }    
-
-
   });
 </script>
 
