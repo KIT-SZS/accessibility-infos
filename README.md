@@ -60,6 +60,20 @@ The software:
   - node.js
 
 
+Short version of updating json data & publishint it:
+====================================================
+
+  just type:
+
+
+          node publish.js
+
+
+Using the software:
+===================
+
+
+
   Parser/xlsx to json (Node.js/server side)
   =========================================
 
@@ -104,6 +118,8 @@ of this repo
 
   Building a concatenated version of the ui (client side)
   =======================================================
+
+
 
     Installation:
     -------------
