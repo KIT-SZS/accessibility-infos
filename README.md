@@ -1,8 +1,12 @@
 Accessibility-infos
 ===================
 
-Data and UI to display **accessibility informations** for the **KIT Campus south**
-(in Karlsruhe, Germany) in an **accessible way** : tested with screen readers, magnifiers etc
+ Data and UI to display **accessibility informations** for the **KIT Campus south**
+(in Karlsruhe, Germany) in an **accessible way** .
+
+It was tested with screen readers, magnifiers etc
+
+You can access the resulting webpage [here](http://kit-szs.github.io/accessibility-infos/infos.html)
 
 
 What is this ?
@@ -12,7 +16,7 @@ This repository contains a few different things:
 - accessibility data for the KIT Campus south for people 
   - who are blind/ have vision impairment
   - who are deaf/  have hearing impairment
-  - wo are using wheelchairs/ crutches etc
+  - wo are using wheelchairs/ have mobility impairment
 
   This data can be found in...the "data" directory as ods/xlsx files
 
@@ -40,6 +44,8 @@ A word on data structures:
   - to make some of the field mapping (from xlsx to json), the translated field names etc more 
 accessible to non coder, there are a few configurable json files which are used by the parser and 
 the user interface:
+
+
     Server side/parser:
     -------------------
     * **parser/deEn_tableFields.json**        : maps **xlsx ,german** field names  to **english** field names
@@ -54,124 +60,131 @@ the user interface:
     * **data/filters.json**: defines **what fields to show/hide** in the user interface, for rooms and builds (based on disability type/level)
 
 
+
 The software:
-=============
+==========
 
-  This is only needed for developpers, or to regenerate the json "database files"
+  This is only needed for developpers, or to regenerate the json "database files".
 
-  Prerequisites:
-  -------------
+
+ Prerequisites:
+ -------------------
 
   - node.js
 
 
-Short version of updating json data & publishint it:
+
+Short version of updating json data & publishing it:
 ====================================================
 
   just type:
 
 
+
+
           node publish.js
 
 
-If you are a developper, follow the guidelines in the next section
+If you are a developper,  please follow the guidelines in the next section
 
 
-Developping/using the scripts etc:
-==================================
+Long version : Developping/using the scripts etc:
+========================
 
 
+ Parser xlsx to json etc (Node.js/server side)
+----------------------------
 
-  Parser/xlsx to json (Node.js/server side)
-  =========================================
 
+   **Installation**
+   ---------------------
 
-    Installation:
-    -------------
 
         npm install
 
 
-    Usage:
-    ------
+   **Usage:**
+ ---------------------
+   
 
-     Assuming you are at the project's root directory
+  Assuming you are at the project's root directory
 
           node parser/parser.js
 
-     This will generate these output files in the current folder
+  This will generate these output files in the current folder
 
           rooms.json
           roomsByBuilding.json
           buildings.json
           
 
-      In order for the user interface to display these files,
+   In order for the user interface to display these files,
       just copy them to the **data** folder
     
   
-  Developping the user interface 
-  ==============================
 
-    - use any web server to serve the files at the root directory
+Developing the user interface 
+-----------------------------------------
+
+- use any web server to serve the files at the root directory
 of this repo
 
-    - for example a good, simple choice is [http-server](https://www.npmjs.org/package/http-server)
+- for example a good, simple choice is [http-server](https://www.npmjs.org/package/http-server)
 
-             http-server .
+         http-server .
 
-    - navigate to localhost:8080 in your web browser 
-
-
-
-  Building a concatenated version of the user interface + its components
-  ======================================================================
+- navigate to localhost:8080 in your web browser 
 
 
 
-    Installation:
-    -------------
+concatenating the user interface + its components
+------------------------------------------------------------------------
+
+
+**Installation:**
+ -------------
 
         bower install
 
 
-    Generate a single output file:
-    ------------------------------
+**Generate a single output file:**
+ ------------------------------
 
-      - First, you need to install : [the vulcanize tool](https://github.com/polymer/vulcanize)
+  - First, you need to install : [the vulcanize tool](https://github.com/polymer/vulcanize)
 
 
                npm install -g vulcanize
 
   
-      - then run
+  - then run
 
 
               vulcanize --inline --output infos.html index.html 
 
 
-    Publish to github pages:
-    ------------------------
+Publish to github pages:
+------------------------
 
-      - commit all your changes
-      - Switch to gh-pages branch:
+ - commit all your changes
+ - Switch to gh-pages branch:
 
 
               git checkout gh-pages
 
-      - Rebase from master branch
+ - Rebase from master branch
     
               git rebase master
 
-      - Push the new version
+ - Push the new version
 
               git push origin gh-pages
 
 
-      - Go back to master
+ - Go back to master
 
               git checkout master
         
+
 
 Q&A
 ===
@@ -195,10 +208,12 @@ store room/ building inner informations in OSM, this will be a project for the f
 Notes:
 ====== 
 
-Usability
+known issues:
 -------------
-
-  - Keyboard navigation is working but might need to be improved
+ - No international versions, German text only for now , sorry !
+ - There are some main menu (only used to filter data) issues
+under some version of Firefox which should be fixed soon
+ - Keyboard navigation is working but might need to be improved
 
 Used libraries:
 ----------------
@@ -217,12 +232,7 @@ Browser Compatiblity
  - Limited to evergreen browsers, see the [Polymer browser compatibility page](https://www.polymer-project.org/resources/compatibility.html)  
 
 
-known issues:
--------------
 
- - No international versions, German text only for now , sorry !
- - There are some main menu (only used to filter data) issues
-under some version of Firefox which should be fixed soon
 
 
 
