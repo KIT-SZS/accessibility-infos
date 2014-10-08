@@ -1,8 +1,8 @@
 Accessibility-infos
 ===================
 
-Data and UI to display accessibility informations for the KIT Campus south
-(in Karlsruhe, Germany) in an accessible way : tested with screen readers, magnifiers etc
+Data and UI to display **accessibility informations** for the **KIT Campus south**
+(in Karlsruhe, Germany) in an **accessible way** : tested with screen readers, magnifiers etc
 
 
 What is this ?
@@ -20,9 +20,14 @@ This repository contains a few different things:
   * uses node.js
 
 - user interface/web page:
-  * built using Polymer.js based custom element(s): various accesibility 
-aspects (for screen readers, etc) are already built into a lot of the polymer
-components, which allowed for fast development
+  * built using Polymer.js based custom element(s)
+
+
+Who are we?
+===========
+
+This project was developped at [Study Centre for the Visually Impaired Students](http://www.szs.kit.edu/english/)
+in Karlsruhe, Germany.
 
 
 A word on data structures:
@@ -173,7 +178,8 @@ Q&A
 
 - Q: Why is there no server side component/  real database etc
 
- A: No budget for that , sadly
+ A: No budget for that , sadly , but it proves that a purely client side application is feaseable
+when dealing with reasonable amounts of data
 
 - Q: Why not use OpenStreetMap to store some of the data:
 
@@ -194,9 +200,11 @@ Usability
 
   - Keyboard navigation is working but might need to be improved
 
-POLYMER elements and accessibility:
-------------------------------------
-
+Used libraries:
+----------------
+  - Internationalization was done with the great [i18next library](http://i18next.com/) (a bit underused in our case.. for now :)
+  - The [Polymer project](https://www.polymer-project.org/) is a fantastic set of polyfills, tools, and components to develop custom web components
+today : the project would not have been possible in such a short time without it
   - The Polymer Ui elements have a lot of thought put into them to make them accessible , and have worked very nicely with screen readers etc out of the box big kudos to the Polymer team !
   See [here](https://github.com/Polymer/paper-button/issues/23) for example
 
@@ -206,5 +214,19 @@ Browser Compatiblity
 
  - Tested in Chrome and Firefox under Windows and Linux
  - *Might* work in Internet Explorer
+ - Limited to evergreen browsers, see the [Polymer browser compatibility page](https://www.polymer-project.org/resources/compatibility.html)  
 
-   
+
+known issues:
+-------------
+
+ - No international versions, German text only for now , sorry !
+ - There are some main menu (only used to filter data) issues
+under some version of Firefox which should be fixed soon
+
+
+
+LICENSE:
+========
+
+MIT, see license file
