@@ -19,7 +19,10 @@ var vulcanize = execSync("vulcanize --inline index.html");
 console.log("vulcanizing:\n",vulcanize);
 
 //do some git magic
-var gitCheckoutGhPages = execSync("git checkout gh-pages");
+var publishGit = execSync("git push -f origin master:gh-pages");
+console.log("Publishing to github:\n",publishGit);
+
+/*var gitCheckoutGhPages = execSync("git checkout gh-pages");
 console.log("Checking out gh-pages branch:\n",gitCheckoutGhPages);
 
 var gitRebaseFromMaster = execSync("git rebase master");
@@ -29,4 +32,4 @@ var gitPushToGhPages = execSync("git push origin gh-pages");
 console.log("Pushing pages:\n",gitPushToGhPages);
 
 var gitCheckoutMaster = execSync("git checkout master");
-console.log("Returning to master branch:\n",gitCheckoutMaster);
+console.log("Returning to master branch:\n",gitCheckoutMaster);*/
