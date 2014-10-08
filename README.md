@@ -142,6 +142,11 @@ of this repo
       - Push the new version
 
               git push origin gh-pages
+
+
+      - Go back to master
+
+              git checkout master
         
 
 Q&A
