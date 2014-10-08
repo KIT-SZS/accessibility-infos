@@ -152,7 +152,7 @@ function deepForceType(obj, value, path, schema)
 
 function parseData(workBook, sheetName, outputName)
 {
-  console.log("Converting data");
+  console.log("Converting data for", sheetName, "to", outputName );
   //load all our helper/maping data structures
   var baseName = "./"+outputName;
   var de_En         = require("./deEn_tableFields.json");
@@ -213,30 +213,35 @@ function parseData(workBook, sheetName, outputName)
   fs.writeFileSync(outputName+".json",JSON.stringify(output) );
 }
 
+
+//generates new data structure for rooms: a hash
+//of buildingNb -> [ list of rooms]
+function structureRoomsByBuilding(){
+  var rooms = JSON.parse( fs.readFileSync("rooms.json") );
+  var roomsOutput = {};
+  for(var i=0;i<rooms.length;i++)
+  {
+    var room = rooms[i];
+    var buildingNb = room.buildingNb;
+    if(!(room.buildingNb in roomsOutput)) roomsOutput[buildingNb] = [];
+    roomsOutput[buildingNb].push( room );
+  }
+  fs.writeFileSync("roomsByBuilding.json",JSON.stringify(roomsOutput) );
+
+}
+
 ////////////
-var workbook = XLSX.readFile('./parser/tabelle_gesamt_stand_2014-09-24.xlsx',{cellHTML:false})
+var workbook = XLSX.readFile('./data/tabelle_gesamt_stand_2014-09-24.xlsx',{cellHTML:false})
 
 var buildings = workbook.Sheets['Gebäude']; 
 var rooms     = workbook.Sheets['Räume']; 
 
-//parseData( workbook, "Gebäude", "buildings" );
-//parseData( workbook, "Räume", "rooms" );
+parseData( workbook, "Gebäude", "buildings" );
+parseData( workbook, "Räume", "rooms" );
 
-//FIXME: temporary hack for rooms data structure
+structureRoomsByBuilding();
 
-var rooms = JSON.parse( fs.readFileSync("rooms.json") );
 
-var roomsOutput = {};
-
-for(var i=0;i<rooms.length;i++)
-{
-  var room = rooms[i];
-  var buildingNb = room.buildingNb;
-  if(!(room.buildingNb in roomsOutput)) roomsOutput[buildingNb] = [];
-  roomsOutput[buildingNb].push( room );
-}
-console.log("roomsOutput",roomsOutput);
-fs.writeFileSync("roomsByBuilding.json",JSON.stringify(roomsOutput) );
 /*
 Allgemeine Daten
   Geb.-Nr.
