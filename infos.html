@@ -11032,14 +11032,14 @@ paper-icon-button:focus{
               <h1>Geb&#xE4;ude</h1>
               <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" tabindex="2" label="Geb&#xE4;ude ausw&#xE4;hlen">
                   <template repeat="{{building in buildings}}">
-                    <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
+                    <paper-item label="{{building.nb}} {{building.name}} "></paper-item>
                   </template>
               </paper-dropdown-menu>
 
               <h1>R&#xE4;ume</h1>
               <paper-dropdown-menu selected="{{selectedRoomIndex}}" id="roomSelector" tabindex="3" label="Raum ausw&#xE4;hlen">
                   <template repeat="{{room in rooms[selectedBuilding.nb]}}">
-                    <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
+                    <paper-item label="{{room.nb}} {{room.name}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
           </section>
@@ -11051,7 +11051,7 @@ paper-icon-button:focus{
         </span>
       </core-toolbar>
       <div class="content" fit="">
-        <core-drawer-panel id="mainPanel" responsivewidth="2048px">
+&#xB2;        <core-drawer-panel id="mainPanel" responsivewidth="2048px">
 
             <article id="controls" drawer=""> 
               <template if="{{ $.mainPanel.selected==&apos;drawer&apos; }}">
