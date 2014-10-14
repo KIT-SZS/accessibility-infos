@@ -31,14 +31,14 @@
               <h1>Gebäude</h1>
               <paper-dropdown-menu selected="{{selectedBuildingIndex}}" id="buildingSelector" tabindex="2" label="Gebäude auswählen">
                   <template repeat="{{building in buildings}}">
-                    <paper-item label="{{building.name}} {{building.nb}}"></paper-item>
+                    <paper-item label="{{building.nb}} {{building.name}} "></paper-item>
                   </template>
               </paper-dropdown-menu>
 
               <h1>Räume</h1>
               <paper-dropdown-menu selected="{{selectedRoomIndex}}"     id="roomSelector"     tabindex="3" label="Raum auswählen">
                   <template repeat="{{room in rooms[selectedBuilding.nb]}}" >
-                    <paper-item label="{{room.name}} {{room.nb}}"></paper-item>
+                    <paper-item label="{{room.nb}} {{room.name}}"></paper-item>
                   </template>
               </paper-dropdown-menu>
           </section>
@@ -50,7 +50,7 @@
         </span>
       </core-toolbar>
       <div class="content" fit>
-        <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
+²        <core-drawer-panel id="mainPanel" responsiveWidth="2048px">
 
             <article id="controls" drawer> 
               <template if="{{ $.mainPanel.selected=='drawer' }}" >

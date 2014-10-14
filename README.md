@@ -1,7 +1,7 @@
 Accessibility-infos
 ===================
 
- Data and UI to display **accessibility informations** for the **KIT Campus south**
+ Data and UI to display **accessibility informations** for the **KIT Campus south and Campus west**
 (in Karlsruhe, Germany) in an **accessible way** .
 
 It was tested with screen readers, magnifiers etc
@@ -30,7 +30,8 @@ This repository contains a few different things:
 Who are we?
 ===========
 
-This project was developped at [Study Centre for the Visually Impaired Students](http://www.szs.kit.edu/english/)
+This project was developped for/by [the Representative for Students with Disabilities and chronic Diseases](https://www.studiumundbehinderung.kit.edu/index.php),
+supported by the   [Study Centre for the Visually Impaired Students](http://www.szs.kit.edu/english/)
 in Karlsruhe, Germany.
 
 
@@ -191,8 +192,10 @@ Q&A
 
 - Q: Why is there no server side component/  real database etc
 
- A: No budget for that , sadly , but it proves that a purely client side application is feaseable
-when dealing with reasonable amounts of data
+ A: No budget.time for that , sadly , but it proves that a purely client side application is feaseable
+when dealing with reasonable amounts of data.
+The initial plan was to integrated the accessibility data into existing KIT databases , but apparently
+none was available with public access/ apis.
 
 - Q: Why not use OpenStreetMap to store some of the data:
 
